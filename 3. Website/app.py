@@ -34,13 +34,13 @@ app.secret_key = os.environ.get("SECRET_KEY", os.urandom(32))
 
 
 # Pull from .env
-raw_path = os.getenv("client_data")
+# raw_path = os.getenv("client_data")
 
-# Convert the string into a Path object
-if raw_path:
-    DATA_DIR = Path(raw_path) 
-else:
-    DATA_DIR = Path(__file__).parent / "data"
+# # Convert the string into a Path object
+# if raw_path:
+#     DATA_DIR = Path(raw_path) 
+# else:
+#     DATA_DIR = Path(__file__).parent / "data"
 
 
 
@@ -94,44 +94,65 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/home")
-@login_required
-def home():
-    username   = session["username"]
-    client_ids = session.get("client_ids", [])
+# @app.route("/home")
+# @login_required
+# def home():
+#     username   = session["username"]
+#     client_ids = session.get("client_ids", [])
 
-    # Build client cards from their payload metadata
-    clients = []
-    for cid in client_ids:
-        payload_path = DATA_DIR / cid / "1. Outputs" / "report_payload.json"
+#     # Build client cards from their payload metadata
+#     clients = []
+#     for cid in client_ids:
+#         payload_path = DATA_DIR / cid / "1. Outputs" / "report_payload.json"
 
-        if payload_path.exists():
-            with open(payload_path) as f:
-                meta = json.load(f).get("meta", {})
-            clients.append({
-                "id":            cid,
-                "name":          meta.get("report_name", cid),
-                "snapshot_date": meta.get("snapshot_date", "—"),
-                "total_members": meta.get("total_members", "—"),
-            })
+#         if payload_path.exists():
+#             with open(payload_path) as f:
+#                 meta = json.load(f).get("meta", {})
+#             clients.append({
+#                 "id":            cid,
+#                 "name":          meta.get("report_name", cid),
+#                 "snapshot_date": meta.get("snapshot_date", "—"),
+#                 "total_members": meta.get("total_members", "—"),
+#             })
 
-    return render_template("home.html", username=username, clients=clients)
+#     return render_template("home.html", username=username, clients=clients)
 
+
+# @app.route("/dashboard/<client_id>")
+# @login_required
+# def dashboard(client_id):
+#     # Authorisation check — user may only view their permitted clients
+#     if client_id not in session.get("client_ids", []):
+#         abort(403)
+
+#     payload_path = DATA_DIR / client_id / "1. Outputs" / "report_payload.json"
+#     if not payload_path.exists():
+#         abort(404)
+
+#     with open(payload_path) as f:
+#         data = json.load(f)
+
+#     return render_template("dashboard.html", data=data)
 
 @app.route("/dashboard/<client_id>")
 @login_required
 def dashboard(client_id):
-    # Authorisation check — user may only view their permitted clients
+    # 1. Authorization check — user may only view their permitted clients
     if client_id not in session.get("client_ids", []):
         abort(403)
 
-    payload_path = DATA_DIR / client_id / "1. Outputs" / "report_payload.json"
-    if not payload_path.exists():
+    # 2. Define the S3 path using your specific folder structure
+    # Match the path logic from your home route: f"{client_id}/payloads/results_2026_04_26.json"
+    payload_key = f"{client_id}/payloads/results_2026_04_26.json"
+
+    # 3. Pull the data from S3
+    data = get_json_from_s3(payload_key)
+
+    # 4. Handle missing data (the S3 version of payload_path.exists())
+    if not data:
         abort(404)
 
-    with open(payload_path) as f:
-        data = json.load(f)
-
+    # 5. Serve the template with the cloud-sourced JSON
     return render_template("dashboard.html", data=data)
 
 
@@ -172,6 +193,80 @@ def request_access():
 
     flash("Someone from our team will be in touch!!")
     return redirect(url_for('index') + '#access')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import os
+import json
+import boto3
+from flask import session, render_template
+from functools import wraps
+
+# --- S3 Helper ---
+def get_json_from_s3(file_key):
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+        region_name='eu-west-2'
+    )
+    
+    try:
+        response = s3.get_object(Bucket=os.getenv('S3_BUCKET_NAME'), Key=file_key)
+        data = json.loads(response['Body'].read())
+        return data
+    except Exception as e:
+        # Silently fail or log so the whole dashboard doesn't crash if one file is missing
+        print(f"Error fetching {file_key}: {e}")
+        return None
+
+# --- Flask Route ---
+@app.route("/home")
+@login_required
+def home():
+    username = session["username"]
+    client_ids = session.get("client_ids", [])
+
+    clients = []
+    for cid in client_ids:
+        # Updated path to match your S3 structure: f"{client}/payloads/results_2026_04_26.json"
+        # Using cid to identify the folder
+        payload_key = f"{cid}/payloads/results_2026_04_26.json"
+
+        # Pull directly from S3 instead of local disk
+        payload_data = get_json_from_s3(payload_key)
+
+        if payload_data:
+            meta = payload_data.get("meta", {})
+            clients.append({
+                "id":             cid,
+                "name":           meta.get("report_name", cid),
+                "snapshot_date":  meta.get("snapshot_date", "—"),
+                "total_members":  meta.get("total_members", "—"),
+            })
+
+    return render_template("home.html", username=username, clients=clients)
+
+
+
+
+
+
+
+
+
+
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 
