@@ -1,0 +1,16 @@
+# Ignore the 0. Client Data directory
+0. Client Data/
+users.py
+
+# Ignore all .env files
+*.env
+.env
+
+# Ignore Virtual Environments
+venv/
+.venv/
+
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
