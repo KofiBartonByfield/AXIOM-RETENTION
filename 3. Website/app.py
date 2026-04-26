@@ -22,6 +22,7 @@ from flask import (
     Flask, render_template, request,
     redirect, url_for, session, abort,
 )
+from flask.cli import load_dotenv
 from werkzeug.security import check_password_hash
 
 from users import USERS, CLIENT_ACCESS
@@ -32,7 +33,13 @@ app = Flask(__name__)
 # Never hardcode this. Generate with: python -c "import os; print(os.urandom(32).hex())"
 app.secret_key = os.environ.get("SECRET_KEY", os.urandom(32))
 
+from dotenv import load_dotenv
+import os
 
+# This looks for the .env file and loads the variables into os.environ
+load_dotenv() 
+
+print(f"DEBUG: Connecting to bucket: {os.getenv("S3_BUCKET_NAME")}")
 # Pull from .env
 # raw_path = os.getenv("client_data")
 
@@ -215,20 +222,27 @@ from functools import wraps
 
 # --- S3 Helper ---
 def get_json_from_s3(file_key):
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-        region_name='eu-west-2'
-    )
-    
     try:
-        response = s3.get_object(Bucket=os.getenv('S3_BUCKET_NAME'), Key=file_key)
-        data = json.loads(response['Body'].read())
-        return data
+        bucket = os.getenv('S3_BUCKET_NAME')
+        if not bucket:
+            print("❌ Error: S3_BUCKET_NAME is missing from your .env file")
+            return None
+
+        s3 = boto3.client('s3') # It will automatically find keys in .env
+        response = s3.get_object(Bucket=bucket, Key=file_key)
+        
+        # Read the body
+        content = response['Body'].read()
+        
+        # Check if we actually got something
+        if not content:
+            print(f"⚠️ Warning: File {file_key} was found but is empty.")
+            return None
+            
+        return json.loads(content)
+
     except Exception as e:
-        # Silently fail or log so the whole dashboard doesn't crash if one file is missing
-        print(f"Error fetching {file_key}: {e}")
+        print(f"❌ S3 Failure for {file_key}: {e}")
         return None
 
 # --- Flask Route ---
