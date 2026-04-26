@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom | Retention Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  
+</head>
+<body>
+<div class="ambient"></div>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-group">
+      <div class="logo"><span>Axiom</span> Retention</div>
+      <div class="logo-sub">Behavioural Intelligence Platform</div>
+    </div>
+    <div class="header-meta">
+      <div class="client-tag" > {{ data.meta.client_name or "Demo Client" }}</div>
+      <div class="snapshot-tag" > {{ data.meta.snapshot_date }}</div>
+    </div>
+  </header>
+
+  <div class="section-label">Overview</div>
+  <div class="overview-container">
+    <div class="kpi-card">
+      <div class="kpi-label">Monthly Churn Rate</div>
+      <div class="kpi-value">{{ data.summary.churn_rate | round(1) }}%</div>
+      <!-- <div class="kpi-sub">Behavioural Risk Population</div> -->
+    </div>
+    <div class="intro-text">
+      <p class="intro-para">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </p>
+    </div>
+  </div>
+
+  <div class="section-label">Audit Summary</div>
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-label">Monthly Revenue at Risk</div>
+      <div class="kpi-value">£{{ "{:,.2f}".format(data.summary.total_short_term_var) }}</div>
+      <div class="kpi-sub">Short-term VaR</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">Annual Revenue Exposure</div>
+      <div class="kpi-value" >£{{ "{:,.2f}".format(data.summary.total_long_term_var) }}</div>
+      <div class="kpi-sub">Long-term VaR (12 months)</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Projected Annual Recovery</div>
+      <div class="kpi-value">£{{ "{:,.2f}".format(data.recovery_projection.annual_recovery) }}</div>
+      <div class="kpi-sub" id="save-rate-label">At 30% save rate</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Members on Watchlist</div>
+      <div class="kpi-value" >{{ data.summary.watchlist_count }}</div>
+      <div class="kpi-sub" id="threshold-label">Above threshold</div>
+    </div>
+  </div>
+
+  <!-- Watchlist label with inline save sentence -->
+  <div class="section-label-row">
+    <div class="section-label">Watchlist</div>
+    <div class="section-label-annotation" id="save-sentence"></div>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">At Risk Members - Ranked by Revenue Exposure</span>
+        <span class="panel-count" id="table-count">{{ data.summary.watchlist_count }} members</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Member ID</th>
+            <th>Risk Level</th>
+            <th class="right">Churn Prob.</th>
+            <th class="hide-sm">Primary Driver</th>
+            <th class="right hide-sm">Monthly Fee</th>
+            <th class="right">Monthly VaR</th>
+            <th class="right">Annual VaR</th>
+          </tr>
+        </thead>
+        <tbody>
+
+{% for m in data.watchlist %}
+
+  <tr class="member-id clickable-row" data-id="{{ m.member_id }}">
+    <td>#{{ m.member_id }}</td>
+    <td><span class="member-id badge {{ m.risk_level }}">{{ m.risk_level }}</span></td>
+    <td class="right">{{ m.churn_probability | round(1) }}%</td>
+    <td>{{ m.driver_1_label or "—" }}</td>
+    <td class="right">£{{ "{:,.2f}".format(m.membership_fee) }}</td>
+    <td class="right">£{{ "{:,.2f}".format(m.short_term_var) }}</td>
+    <td class="right">£{{ "{:,.2f}".format(m.long_term_var) }}</td>
+  </tr>
+
+  <tr class="driver-detail-row" id="detail-{{ m.member_id }}" style="display:none;">
+    <td colspan="7">
+ <div class="driver-detail-inner">
+
+  <div class="driver-detail-label">
+    Churn drivers — member #{{ m.member_id }}
+        </div>
+
+        {% set drivers = [
+          (m.driver_1_label, m.driver_1_impact),
+          (m.driver_2_label, m.driver_2_impact),
+          (m.driver_3_label, m.driver_3_impact)
+        ] %}
+
+        {% for label, impact in drivers %}
+          {% if label %}
+            <div class="driver-item">
+
+              <span class="driver-rank">
+                #{{ loop.index }}
+              </span>
+
+              <span class="driver-text">
+                {{ label }}
+              </span>
+
+              <span class="driver-impact {% if impact > 0 %}pos{% else %}neg{% endif %}">
+                {% if impact > 0 %}+{% endif %}{{ "%.3f"|format(impact) }}
+              </span>
+
+            </div>
+          {% endif %}
+        {% endfor %}
+
+      </div>
+    </td>
+  </tr>
+
+{% endfor %}
+
+</tbody>
+      </table>
+    </div>
+
+    <div class="sidebar">
+      <div class="stat-block">
+        <div class="stat-block-title">Risk Distribution</div>
+        <div id="risk-breakdown">
+            {% set total = data.summary.risk_distribution.values() | sum %}
+
+            {% for k in ['CRITICAL', 'HIGH', 'ELEVATED', 'MONITOR'] %}
+              {% set val = data.summary.risk_distribution.get(k, 0) %}
+
+              {% if val > 0 %}
+                <div class="risk-row">
+                  <span class="risk-row-label {{ k }}">{{ k }}</span>
+
+                  <div class="risk-bar-track">
+                    {% set pct = (val / total * 100) | round(1) %}
+                    <div class="risk-bar-fill {{ k }}-fill" style="width: {{ pct }}%">
+                    </div>
+                  </div>
+
+                  <span class="risk-row-count">{{ val }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        
+
+      </div>
+
+      <!-- LTV block: new information, not a reformat of existing numbers -->
+      <div class="ltv-block">
+        <div class="stat-block-title">Member Lifetime Value (LTV)</div>
+        <div class=" kpi-value gold" > £{{ "{:,.2f}".format(data.member_ltv.avg_ltv) }}</div>
+        <div class="kpi-sub" id="save-rate-label">Average Total Value driven by each member</div>
+
+      </div>
+
+      <div class="stat-block">
+        <div class="stat-block-title">Model Performance</div>
+        <div id="model-rows">
+
+  <div class="model-row">
+    <span class="model-row-key">Model</span>
+    <span class="model-row-val gold">
+      {{ data.model.winner.replace('_', ' ') }}
+    </span>
+  </div>
+
+  <div class="model-row">
+    <span class="model-row-key">Test Recall</span>
+    <span class="model-row-val">
+      {{ (data.model.test_recall * 100) | round(1) }}%
+    </span>
+  </div>
+
+  <div class="model-row">
+    <span class="model-row-key">Precision</span>
+    <span class="model-row-val">
+      {{ (data.model.precision * 100) | round(1) }}%
+    </span>
+  </div>
+
+  <div class="model-row">
+    <span class="model-row-key">F1 Score</span>
+    <span class="model-row-val">
+      {{ data.model.f1_score | round(3) }}
+    </span>
+  </div>
+
+</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-brand"><span>Axiom</span> Retention</div>
+    <div class="footer-note" id="footer-note">
+      Pipeline v{{ data.meta.pipeline_version }}
+      · {{ data.meta.generated_at }}
+      · {{ data.meta.total_members }} members analysed
+    </div>  
+</footer>
+
+</div>
+
+</body>
+</html>
+
+<script>
+document.querySelectorAll(".clickable-row").forEach(row => {
+  row.addEventListener("click", () => {
+    const id = row.dataset.id;
+    const detail = document.getElementById("detail-" + id);
+
+    if (!detail) return;
+
+    const isOpen = detail.style.display === "table-row";
+    detail.style.display = isOpen ? "none" : "table-row";
+  });
+});
+</script>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom | Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="auth-body">
+<div class="ambient"></div>
+
+<div class="auth-container">
+
+  <div class="auth-logo">
+    <a href="{{ url_for('index') }}" class="logo-link">
+      <div class="logo"><span>Axiom</span> Retention</div>
+    </a>
+      <div class="logo-sub">Behavioural Intelligence Platform</div>
+  </div>
+
+  
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="auth-card-title">Sign in</div>
+      <div class="auth-card-sub">Access your retention dashboard</div>
+    </div>
+
+    {% if error %}
+      <div class="auth-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('login') }}{% if request.args.get('next') %}?next={{ request.args.get('next') }}{% endif %}">
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input
+          class="form-input"
+          type="text"
+          id="username"
+          name="username"
+          autocomplete="username"
+          autofocus
+          required
+        >
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          class="form-input"
+          type="password"
+          id="password"
+          name="password"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+      <button class="form-submit" type="submit">Sign in</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    <span class="footer-brand"><span>Axiom</span> Retention Group</span>
+  </div>
+
+</div>
+</body>
+</html>

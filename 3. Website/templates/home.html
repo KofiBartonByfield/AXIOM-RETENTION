@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom | Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div class="ambient"></div>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-group">
+      <div class="logo">
+        
+        <a href="{{ url_for('index') }}" class="logo-link">
+          <div class="logo"><span>Axiom</span> Retention</div>
+        </a>
+
+        <div class="logo-sub">Behavioural Intelligence Platform</div>
+      </div>
+    </div>
+    
+    <div class="header-meta">
+      <div class="client-tag">{{ username }}</div>
+      <a href="{{ url_for('logout') }}" class="logout-link">Sign out</a>
+    </div>
+    
+  </header>
+
+  <div class="section-label">Reports</div>
+
+  {% if clients %}
+    <div class="client-grid">
+      {% for client in clients %}
+        <a class="client-card" href="{{ url_for('dashboard', client_id=client.id) }}">
+          <div class="client-card-header">
+            <div class="client-card-name">{{ client.name }}</div>
+            <div class="client-card-arrow">→</div>
+          </div>
+          <div class="client-card-meta">
+            <span class="client-meta-item">
+              <span class="client-meta-label">Snapshot</span>
+              <span class="client-meta-val">{{ client.snapshot_date }}</span>
+            </span>
+            <span class="client-meta-item">
+              <span class="client-meta-label">Members</span>
+              <span class="client-meta-val">{{ client.total_members }}</span>
+            </span>
+          </div>
+          <div class="client-card-cta">View Report</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">○</div>
+      <div class="empty-state-text">No reports available yet.</div>
+    </div>
+  {% endif %}
+
+  <footer>
+    <div class="footer-brand"><span>Axiom</span> Retention Group</div>
+  </footer>
+
+</div>
+</body>
+</html>

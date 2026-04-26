@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axiom Retention</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#070a0f;
+  --surface:rgba(13,17,23,0.78);
+  --surface2:rgba(18,24,38,0.75);
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.12);
+  --gold:#c9a84c;
+  --text:#e8eaf0;
+  --muted:#7a8599;
+  --muted2:#9aa6b2;
+  --blue:#4a9eff;
+  --green:#3ecf8e;
+  --red:#e05252;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:radial-gradient(circle at 20% 10%, rgba(201,168,76,0.08), transparent 40%), var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+.container{
+  max-width:1180px;
+  margin:0 auto;
+  padding:56px 22px;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  border-bottom:1px solid var(--border);
+  padding-bottom:18px;
+  margin-bottom:64px;
+}
+
+.logo{
+  font-family:'Barlow Condensed';
+  font-size:30px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.logo span{color:var(--gold)}
+
+.sub{
+  font-family:'DM Mono';
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  margin-top:6px;
+}
+
+.nav a{
+  color:var(--muted2);
+  text-decoration:none;
+  margin-left:18px;
+  font-size:13px;
+}
+
+.nav a:hover{color:var(--gold)}
+
+.hero{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:42px;
+  align-items:center;
+  margin-bottom:80px;
+}
+
+h1{
+  font-size:52px;
+  line-height:1.05;
+  letter-spacing:-0.02em;
+}
+
+h1 span{color:var(--gold)}
+
+p{
+  color:var(--muted2);
+  line-height:1.75;
+  font-size:15px;
+  margin-top:14px;
+}
+
+.cta-row{
+  display:flex;
+  gap:12px;
+  margin-top:22px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  background:var(--gold);
+  border:none;
+  padding:12px 16px;
+  font-weight:600;
+  cursor:pointer;
+  color:#111;
+  border-radius:6px;
+  font-size:13px;
+}
+
+.btn.secondary{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text);
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border:1px solid var(--border);
+  padding:22px;
+  border-radius:10px;
+  backdrop-filter:blur(10px);
+}
+
+.kpi{
+  font-size:34px;
+  font-weight:700;
+  color:var(--gold);
+}
+
+.section{
+  margin-top:90px;
+}
+
+.section-title{
+  font-family:'DM Mono';
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.step{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:20px;
+  border-radius:10px;
+}
+
+.step-num{
+  font-family:'DM Mono';
+  font-size:10px;
+  color:var(--gold);
+  margin-bottom:10px;
+  letter-spacing:.2em;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:rgba(0,0,0,0.2);
+  color:var(--text);
+  margin-top:10px;
+}
+
+.form{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+
+footer{
+  margin-top:90px;
+  border-top:1px solid var(--border);
+  padding-top:26px;
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:12px;
+}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  h1{font-size:40px}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div>
+    <div class="logo"><span>Axiom</span> Retention</div>
+    <div class="sub">Behavioural Intelligence Platform</div>
+  </div>
+  <nav class="nav">
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#flow">How it works</a>
+    <a href="#access">Demo</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h1><span>Overview</span></h1>
+  
+  <div class="overview-container">
+    <div class="kpi-card">
+      <div class="kpi-label">Monthly Churn Rate</div>
+      <div class="kpi-value">{{ data.summary.churn_rate | round(1) }}%</div>
+      <!-- <div class="kpi-sub">Behavioural Risk Population</div> -->
+    </div>
+    <div class="intro-text">
+      <p class="intro-para">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </p>
+    </div>
+  </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+
+
+
+<footer>
+  <div>Axiom Retention</div>
+  <div>info@axiomretention.com</div>
+</footer>
+
+</div>
+
+</body>
+</html>

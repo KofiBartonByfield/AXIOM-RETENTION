@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom Retention</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/index_styles.css">
+  <link rel="stylesheet" href="../static/styles.css">
+
+</head>
+<body>
+<div class="ambient"></div>
+<div class="wrapper">
+
+  <header>
+      <div class="logo-group">
+        <div class="logo">
+
+          <a href="{{ url_for('index') }}" class="logo-link">
+            <div class="logo"><span>Axiom</span> Retention</div>
+          </a>
+
+          <div class="logo-sub">Behavioural Intelligence Platform</div>
+        </div>
+      </div>
+
+
+    <nav class="nav">
+      <a href="#home">Home</a>
+      <a href="#explanation">How it Works</a>
+      <a href="#contact">Get Started</a>
+      <a href="{{ url_for('login') }}" class="btn-login">Login to Axiom</a>
+    </nav>
+    
+  </header>
+
+
+<section class="hero-section"> <div class="hero-container" style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap;">
+    
+    <div class="hero-text" style="flex: 1; min-width: 300px;">
+        <h1>Stop losing members.<br><span>Start predicting churn.</span></h1>
+        <p>
+          Axiom identifies members at risk of cancellation before they disengage, so your team can act while revenue is still recoverable.
+        </p>
+
+        <div class="cta-row">
+          <button class="btn" onclick="document.getElementById('access').scrollIntoView()">Get Demo Access</button>
+          <button class="btn secondary" onclick="document.getElementById('problem').scrollIntoView()">Learn more</button>
+        </div>
+    </div>
+
+    <div class="card" >
+        <div class="section-title">Typical impact</div>
+        <div class="kpi">£5k - £20k</div>
+        <p>Recoverable revenue identified per club through early churn detection and intervention.</p>
+    </div>
+
+  </div> </section>
+
+<section class="section" id="problem">
+  <div class="section-label">The problem</div>
+  <h2>Gyms act after churn, not before it</h2>
+  <p>
+    By the time a member stops attending, the decision to leave has already happened weeks earlier. Traditional reporting only shows loss after it is too late to act.
+  </p>
+</section>
+
+<section class="section" id="solution">
+  <div class="section-label">The solution</div>
+  <h2>Predict behaviour before cancellation</h2>
+  <p>
+    We model behavioural signals across attendance patterns to surface churn risk early, ranked by revenue impact so teams focus only on what matters.
+  </p>
+</section>
+
+<section class="section" id="flow">
+  <div class="section-label">How it works</div>
+
+  <div class="grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Connect data</h3>
+      <p>We ingest anonymised member behaviour from your existing systems.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Model risk</h3>
+      <p>We calculate churn probability and revenue at risk per member.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Act early</h3>
+      <p>You receive prioritised intervention lists before churn happens.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="access">
+  <div class="section-label">Demo access</div>
+
+  <h2>Get access to the live dashboard</h2>
+  <p id="form-message">Enter your email to unlock a demo environment and see churn predictions in action.</p>
+
+  <form action="{{ url_for('request_access') }}" method="POST" class="form">
+    <input name="email" type="email" placeholder="Email" required>
+    <button type="submit" class="btn">Request access</button>
+  </form>
+
+
+<div >
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p class="fade-in">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+</section>
+
+
+
+
+
+    
+  <footer>
+    <div class="footer-brand"><span>Axiom</span> Retention Group</div>
+  </footer>
+
+</div>
+</body>
+</html>
