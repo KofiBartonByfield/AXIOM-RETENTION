@@ -44,6 +44,7 @@ body {
 .wrapper {
   position: relative; z-index: 1;
   max-width: 1400px; margin: 0 auto; padding: 40px 48px 80px;
+  min-height: 80vh;
 }
 
 /* ── Header ── */
@@ -540,3 +541,61 @@ select:focus, .file-input:focus {
     font-weight: bold;
     text-decoration: none;
 }
+
+
+.site-footer {
+    padding: 80px 20px 40px; /* Lots of top padding to separate it from content */
+    background: transparent;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle divider */
+}
+
+.footer-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Even spacing between elements */
+}
+
+.footer-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.footer-brand span {
+    color: var(--gold); 
+}
+
+.footer-tagline {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin: 0;
+}
+
+.footer-links {
+    font-size: 0.9rem;
+}
+
+.footer-links a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.footer-links a:hover {
+    opacity: 0.7;
+}
+
+.footer-legal {
+    margin-top: 20px;
+    font-size: 0.75rem;
+    opacity: 0.4;
+    letter-spacing: 0.5px;
+}
+

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../static/index_styles.css">
   <link rel="stylesheet" href="../static/styles.css">
-
 </head>
 <body>
 <div class="ambient"></div>
@@ -17,26 +16,22 @@
   <header>
       <div class="logo-group">
         <div class="logo">
-
           <a href="{{ url_for('index') }}" class="logo-link">
             <div class="logo"><span>Axiom</span> Retention</div>
           </a>
-
           <div class="logo-sub">Behavioural Intelligence Platform</div>
         </div>
       </div>
 
-
     <nav class="nav">
           <div class="nav-links-group">
-
-      <a href="#home">Home</a>
-      <a href="#explanation">How it Works</a>
+      <a href="{{ url_for('home') }}">Home</a>
+      <!-- <a href="#problem">The Problem</a> -->
+      <a href="#flow">The Science</a>
       <a href="#contact">Get Started</a>
       <a href="{{ url_for('login') }}" class="btn-login">Sign in</a>
           </div>
     </nav>
-    
   </header>
 
 
@@ -45,94 +40,119 @@
     <div class="hero-text" style="flex: 1; min-width: 300px;">
         <h1>Stop losing members.<br><span>Start predicting churn.</span></h1>
         <p>
-          Axiom identifies members at risk of cancellation before they disengage, so your team can act while revenue is still recoverable.
+          Axiom translates raw attendance data into actionable retention lists. Identify at-risk members before they disengage, allowing your team to intervene while revenue is still recoverable.
         </p>
 
         <div class="cta-row">
-          <button class="btn" onclick="document.getElementById('access').scrollIntoView()">Get Demo Access</button>
-          <button class="btn secondary" onclick="document.getElementById('problem').scrollIntoView()">Learn more</button>
+          <button class="btn" onclick="document.getElementById('access').scrollIntoView()">Request Demo Access</button>
+          <button class="btn secondary" onclick="document.getElementById('problem').scrollIntoView()">Explore the Platform</button>
         </div>
     </div>
 
-    <div class="card" >
-        <div class="section-title">Typical impact</div>
-        <div class="kpi">£5k - £20k</div>
-        <p>Recoverable revenue identified per club through early churn detection and intervention.</p>
+    <div class="card">
+        <div class="section-title">Estimated Annual Recovery</div>
+        <div class="kpi">£5,000 - £20,000</div>
+        <p>Average recoverable revenue identified per club through early-stage behavioural intervention.</p>
     </div>
-
-  </div> </section>
+  </div> 
+</section>
 
 <section class="section" id="problem">
-  <div class="section-label">The problem</div>
-  <h2>Gyms act after churn, not before it</h2>
-  <p>
-    By the time a member stops attending, the decision to leave has already happened weeks earlier. Traditional reporting only shows loss after it is too late to act.
-  </p>
+  <div class="section-label">The Problem</div>
+  <h2>The "Lagging Indicator" Trap</h2>
+  <div>
+    <p>
+      In the fitness industry, cancellation is the final stage of a long process. By the time a member cancels their direct debit, they have usually been "psychologically churned" for weeks or even months. 
+    </p>
+    <p>
+      Traditional management software provides <strong>lagging indicators</strong>—telling you who left yesterday, rather than who is wavering today. This reactive approach forces staff to chase "lost causes" rather than nurturing members who are just starting to slip away.
+    </p>
+  </div>
 </section>
 
 <section class="section" id="solution">
-  <div class="section-label">The solution</div>
-  <h2>Predict behaviour before cancellation</h2>
-  <p>
-    We model behavioural signals across attendance patterns to surface churn risk early, ranked by revenue impact so teams focus only on what matters.
-  </p>
+  <div class="section-label">The Solution</div>
+  <h2>Proactive Retention Management</h2>
+  <div>
+    <p>
+      Axiom shifts the focus from recovery to prevention. We monitor the subtle "digital breadcrumbs" members leave behind, surfacing high-risk individuals based on shifting attendance velocity and engagement patterns.
+    </p>
+    <p>
+      Our platform provides your front-of-house team with a prioritised "intervene" list daily. You aren't just seeing that someone is absent; you're seeing the probability that they won't return without a nudge.
+    </p>
+  </div>
 </section>
 
 <section class="section" id="flow">
-  <div class="section-label">How it works</div>
+  <div class="section-label">The Science</div>
+  <h2>How our Machine Learning works</h2>
+  <p style="margin-bottom: 40px; max-width: 700px;align-items: center;">
+    We don't just use "AI" as a buzzword. Our platform uses predictive modelling to find the patterns that humans often miss.
+  </p>
 
   <div class="grid">
     <div class="step">
       <div class="step-num">01</div>
-      <h3>Connect data</h3>
-      <p>We ingest anonymised member behaviour from your existing systems.</p>
+      <h3>Data Synthesis</h3>
+      <p>We securely ingest anonymised historical data from your CRM. Our system looks at years of successful and unsuccessful member journeys to learn what "good" looks like for your specific club.</p>
     </div>
 
     <div class="step">
       <div class="step-num">02</div>
-      <h3>Model risk</h3>
-      <p>We calculate churn probability and revenue at risk per member.</p>
+      <h3>Pattern Recognition</h3>
+      <p>Our algorithms identify non-linear triggers, subtle changes in visit frequency, time of day shifts, or seasonal dips that statistically correlate with a high probability of future churn.</p>
     </div>
 
     <div class="step">
       <div class="step-num">03</div>
-      <h3>Act early</h3>
-      <p>You receive prioritised intervention lists before churn happens.</p>
+      <h3>Revenue Prioritisation</h3>
+      <p>Not all churn is equal. We cross reference risk probability with member lifetime value, ensuring your team focuses their limited time on the interventions that protect the most revenue.</p>
     </div>
   </div>
 </section>
 
-<section class="section" id="access">
-  <div class="section-label">Demo access</div>
-
-  <h2>Get access to the live dashboard</h2>
-  <p id="form-message">Enter your email to unlock a demo environment and see churn predictions in action.</p>
+<section class="section" id="contact" id="access">
+  <div class="section-label">Demo Access</div>
+  <h2>Explore the Live Dashboard</h2>
+  <p id="form-message" style="max-width: 600px;">
+    See how we visualise churn risk and revenue opportunity. Enter your email below to receive access to our sandboxed demo environment.
+  </p>
 
   <form action="{{ url_for('request_access') }}" method="POST" class="form">
-    <input name="email" type="email" placeholder="Email" required>
-    <button type="submit" class="btn">Request access</button>
+    <input name="email" type="email" placeholder="Enter Email Address" required>
+    <button type="submit" class="btn">Request Access</button>
   </form>
 
-
-<div >
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-          <p class="fade-in">{{ message }}</p>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-</div>
+  <div>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <p class="fade-in" style="margin-top: 20px; color: #4facfe;">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+  </div>
 </section>
 
-
-
-
-
+<footer class="site-footer">
+  <div class="footer-container">
     
-  <footer>
-    <div class="footer-brand"><span>Axiom</span> Retention Group</div>
-  </footer>
+    <div class="footer-brand">
+      <span>Axiom</span> Retention Group
+    </div>
+    
+    <p class="footer-tagline">Built for data driven gym operators.</p>
+    
+    <div class="footer-links">
+      Contact us at <a href="mailto:info@axiomretention.com">info@axiomretention.com</a>
+    </div>
+
+    <div class="footer-legal">
+      &copy; 2026 Axiom Retention. All rights reserved.
+    </div>
+
+  </div>
+</footer>
 
 </div>
 </body>
