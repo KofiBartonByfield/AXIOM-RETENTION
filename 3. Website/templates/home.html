@@ -12,7 +12,7 @@
 <div class="ambient"></div>
 <div class="wrapper">
 
-  <header>
+    <header>
     <div class="logo-group">
       <div class="logo">
         
@@ -23,16 +23,21 @@
         <div class="logo-sub">Behavioural Intelligence Platform</div>
       </div>
     </div>
+
+
+<nav class="nav">
+    <div class="header-meta">Welcome back, {{ username }}!</div>
     
-    <div class="header-meta">
-      <div class="client-tag">{{ username }}</div>
-      <a href="{{ url_for('logout') }}" class="logout-link">Sign out</a>
+    <div class="nav-links-group">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('index') }}">How it Works</a>
+        <a href="{{ url_for('logout') }}">Sign out</a>
+        <a href="{{ url_for('upload_data') }}" class="btn-login">Upload Data</a>
     </div>
-    
+</nav>
   </header>
-
   <div class="section-label">Reports</div>
-
+<!-- 
   {% if clients %}
     <div class="client-grid">
       {% for client in clients %}
@@ -60,7 +65,58 @@
       <div class="empty-state-icon">○</div>
       <div class="empty-state-text">No reports available yet.</div>
     </div>
-  {% endif %}
+  {% endif %} -->
+
+
+
+  <div class="client-grid">
+    {% for report in reports %}
+    <a class="client-card" href="{{ url_for('dashboard', client_id=report.client_id, filename=report.filename) }}" >
+        <h3 class="client-card-name">{{ report.report_name }}</h3>
+        <span class="client-meta-val"><strong>Date:</strong> {{ report.snapshot_date }}</span>
+        <span class="client-meta-val"><strong>Members:</strong> {{ report.total_members }}</span>
+        
+      
+        <div class="client-card-cta">View Report</div>
+
+    </a>
+    {% else %}
+    <div class="empty-state-text">No reports available yet.</div>
+
+    {% endfor %}
+</div>
+
+
+<!-- 
+<div class="client-grid">
+    {% for client in clients %}
+    <a class="client-card" href="{{ url_for('dashboard', client_id=client.client_id, filename=client.filename) }}">
+        <h3  class="client-card-name">{{ client.report_name }}</h3>
+          <div class="client-card-meta">
+            <span class="client-meta-item">
+              <span class="client-meta-label">Snapshot</span>
+              <span class="client-meta-val">{{ client.snapshot_date }}</span>
+            </span>
+            <span class="client-meta-item">
+              <span class="client-meta-label">Members</span>
+              <span class="client-meta-val">{{ client.total_members }}</span>
+            </span>
+          </div>
+
+          <div class="client-card-cta">View Report</div>
+
+        </a>
+    {% else %}
+    <div class="empty-state-text">No reports available yet.</div>
+
+    {% endfor %}
+</div>
+ -->
+
+
+
+
+
 
   <footer>
     <div class="footer-brand"><span>Axiom</span> Retention Group</div>
