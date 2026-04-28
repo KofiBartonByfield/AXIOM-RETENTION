@@ -1,5 +1,5 @@
 # Ignore the 0. Client Data directory
-0. Client Data/
+0. Admin/
 users.py
 
 # Ignore all .env files
