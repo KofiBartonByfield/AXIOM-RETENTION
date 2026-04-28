@@ -196,13 +196,14 @@ def classify_risk(prob: float) -> str:
 
 # ── Core pipeline function
 def run_pipeline(
-    df: pd.DataFrame,
+ 
     watchlist_threshold: float = 70.0,
     assumed_save_rate: float = 0.30,
     long_term_months: int = 12,
     test_size: float = 0.20,
     random_seed: int = 42,
     client: str = "demo_example",
+    raw_file: str = "members_26042026.csv",
     # output_path: str = os.getenv('payload'),
 ) -> dict:
     """
@@ -223,6 +224,7 @@ def run_pipeline(
     -------
     dict — the full report payload (also written to output_path)
     """
+    df=get_data_from_s3(f"{client}/processed/{raw_file}")
 
     # ── Validation ────────────────────────────────────────────────────────────
     missing = set(REQUIRED_COLUMNS) - set(df.columns)
@@ -363,9 +365,9 @@ def run_pipeline(
     payload = {
         "meta": {
             "generated_at":      datetime.now().isoformat(),
-            "pipeline_version":  "1.0.0",
-            "client_name":       "Demo Client",
-            "report_name":       f"Churn Risk Report - {datetime.now().strftime('%d/%m/%Y')}",
+            "pipeline_version":  "1.4.1",
+            "client_name":       client,
+            "report_name":       f"{datetime.now().strftime('%B %d, %Y')} Churn Report", # change this to 1st Jan 2026 format
             "total_members":     total_members,
             "snapshot_date":     datetime.now().strftime('%d/%m/%Y'),
             "model_type":        winner_name,
@@ -373,6 +375,7 @@ def run_pipeline(
             "top_n_drivers":     3,
         },
         "summary": {
+            "description":            "This report identifies members at risk of churning and projects potential revenue recovery from targeted interventions.",
             "churn_rate":            round(churn_rate, 2),
             "total_monthly_revenue":   total_monthly_revenue,
             "watchlist_count":         watchlist_count,
@@ -400,7 +403,8 @@ def run_pipeline(
     }
 
     # ── Write output ──────────────────────────────────────────────────────────
-    upload_json_to_s3(payload, "results_2026_04_26.json")
+    upload_json_to_s3(payload, f"{client}_results_{datetime.now().strftime('%d_%m_%Y')}.json", client=client)  
+    # upload_json_to_s3(payload, "results_2026_04_26.json")
     # out = Path(output_path)
     # out.parent.mkdir(parents=True, exist_ok=True)
     # with open(out, "w") as f:
@@ -438,32 +442,15 @@ def run_pipeline(
 
 # if df is not None:
 #     print("Success! Data loaded:")
-import argparse
+# import argparse
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Axiom Churn Prediction Pipeline")
-    # parser.add_argument("--data",       type=str,   default="data/members.csv",                   help="Path to input CSV")
-    parser.add_argument("--threshold",  type=float, default=70.0,                       help="Watchlist probability threshold (default 70)")
-    parser.add_argument("--save-rate",  type=float, default=0.30,                       help="Assumed save rate for revenue projection (default 0.30)")
-    parser.add_argument("--lt-months",  type=int,   default=12,                         help="Months for long-term VaR projection (default 12)")
-    parser.add_argument("--test-size",  type=float, default=0.20,                       help="Test set proportion (default 0.20)")
-    parser.add_argument("--seed",       type=int,   default=42,                         help="Random seed")
-    # parser.add_argument("--out",        type=str,   default="outputs/report_payload.json", help="Output JSON path")
-    args = parser.parse_args()
 
-    # df = pd.read_csv(args.data)
-    target_file = "demo_example/raw/members_26042026.csv"
     client = "demo_example"
+    raw_file = "members_26042026.csv"
 
 
-    payload = run_pipeline(
-                            df=get_data_from_s3(target_file),
-                            watchlist_threshold=args.threshold,
-                            assumed_save_rate=args.save_rate,
-                            long_term_months=args.lt_months,
-                            test_size=args.test_size,
-                            random_seed=args.seed,
-                            client = client,
-                        )
+    payload = run_pipeline(client = client, 
+                           raw_file = raw_file)
     
-    upload_json_to_s3(payload, "results_2026_04_26.json", client=client)  
+    # 
