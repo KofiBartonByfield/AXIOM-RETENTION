@@ -337,11 +337,23 @@ def change_status(file_id, new_status):
     if session.get("role") != "admin":
         abort(403)
 
-    conn = sqlite3.connect('axiom.db')
-    cursor = conn.cursor()
-    cursor.execute("UPDATE uploads SET status = ? WHERE id = ?", (new_status.upper(), file_id))
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect(DB_PATH) # MUST use the same DB_PATH
+        cursor = conn.cursor()
+        
+        # Update the status based on the ID
+        cursor.execute(
+            "UPDATE uploads SET status = ? WHERE id = ?",
+            (new_status, file_id)
+        )
+        
+        conn.commit()
+        conn.close()
+        
+        flash(f"Status updated to {new_status}")
+    except Exception as e:
+        print(f"Update failed: {e}")
+        flash("Failed to update status.")
 
     return redirect(url_for('admin_portal'))
 # ── Run ───────────────────────────────────────────────────────────────────────
