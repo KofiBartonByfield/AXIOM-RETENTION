@@ -7,7 +7,7 @@ Fully Cloud-Native Architecture:
 - Environment variables manage all AWS connections and secrets.
 """
 
-from dbm import sqlite3
+import sqlite3
 import os
 import json
 import boto3
