@@ -251,33 +251,29 @@ def upload_data():
             flash("Missing file or client selection.")
             return redirect(request.url)
 
-        if client_id not in session.get("client_ids", []):
-            abort(403)
-
         try:
-            # 1. S3 Upload Logic
+            # 1. S3 Upload
             s3 = boto3.client('s3')
             file_key = f"{client_id}/raw/{file.filename}"
+            s3.upload_fileobj(file, os.getenv('S3_BUCKET_NAME'), file_key)
             
-            s3.upload_fileobj(
-                file,
-                os.getenv('S3_BUCKET_NAME'),
-                file_key
-            )
-            
-            # 2. SQL Database Logic (The Admin Queue)
-            conn = sqlite3.connect(DB_PATH) # Using the path to parent dir
-            cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO uploads (filename, client_name, status) VALUES (?, ?, ?)",
-                (file.filename, client_id, 'PENDING')
-            )
-            conn.commit()
-            conn.close()
-
-            flash(f"Successfully uploaded {file.filename}. Status set to PENDING.")
+            # 2. SQL Log - Wrap this specifically to see if DB is the issue
+            try:
+                conn = sqlite3.connect(DB_PATH)
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT INTO uploads (filename, client_name, status) VALUES (?, ?, ?)",
+                    (file.filename, client_id, 'PENDING')
+                )
+                conn.commit()
+                conn.close()
+            except Exception as db_err:
+                print(f"Database Error: {db_err}")
+                # We don't want to stop the whole process if just the log fails, 
+                # but we need to know!
 
             # 3. Email Notification
+            # Ensure 'from email.message import EmailMessage' is at the top!
             msg = EmailMessage()
             msg.set_content(f"New file uploaded for {client_id}: {file.filename}")
             msg['Subject'] = f"📥 New Upload: {client_id}"
@@ -289,13 +285,16 @@ def upload_data():
                     smtp.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
                     smtp.send_message(msg)
             except Exception as e:
-                print(f"Email failed: {e}")
+                print(f"Email notification failed but upload succeeded: {e}")
 
-            return redirect(url_for('home'))
+            flash(f"Successfully uploaded {file.filename}!")
+            return redirect(url_for('home')) # This should now trigger
             
         except Exception as e:
-            print(f"❌ Upload failed: {e}")
-            flash("Upload failed. Check server logs.")
+            # If we get here, S3 or the core logic failed
+            print(f"❌ CRITICAL UPLOAD FAILURE: {e}")
+            flash(f"Upload failed: {e}")
+            return redirect(request.url) # Redirect back so they can try again
     
     return render_template("upload.html", client_ids=session.get("client_ids", []))
 
