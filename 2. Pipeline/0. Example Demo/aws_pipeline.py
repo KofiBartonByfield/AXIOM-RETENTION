@@ -451,7 +451,7 @@ def run_pipeline(
     }
 
     # ── Write output ──────────────────────────────────────────────────────────
-    upload_json_to_s3(payload, f"{client}_results_{datetime.now().strftime('%d_%m_%Y')}.json", client=client)  
+    upload_json_to_s3(payload, f"results_{datetime.now().strftime('%d_%m_%Y')}.json", client=client)  
     # upload_json_to_s3(payload, "results_2026_04_26.json")
     # out = Path(output_path)
     # out.parent.mkdir(parents=True, exist_ok=True)
