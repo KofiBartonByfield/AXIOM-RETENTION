@@ -38,6 +38,12 @@
           <a href="{{ url_for('home') }}">Home</a>
           <a href="{{ url_for('index') }}">The Science</a>
           <a href="{{ url_for('logout') }}">Sign out</a>
+        {% if session.get('role') == 'admin' %}
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('admin_portal') }}" style="color: #FFB800; font-weight: bold;">
+                Admin Portal
+            </a>
+        {% endif %}
           <a href="{{ url_for('upload_data') }}" class="btn-login">Upload Data</a>
       </div>
   </nav>
@@ -262,27 +268,31 @@
     </div>
     
     <div class="sidebar-content">
-        
+        {% for driver in data['summary']['macro_drivers'] %}
         <div class="driver-card">
-            <h3 class="driver-title">📉 High Fatigue Index</h3>
+            <div class="driver-badge">{{ driver.prevalence_pct|round(1) }}% Prevalence</div>
+            <h3 class="driver-title">{{ driver.label }}</h3>
+            
             <ul class="suggestion-list">
-                <li>Increase recovery block by 15%</li>
-                <li>Implement mandatory HRV monitoring</li>
-                <li>Adjust load for Group B athletes</li>
+                {# Logical mapping based on the 'feature' key #}
+                {% if driver.feature == 'velocity' %}
+                    <li>Flag for "Re-engagement" SMS sequence</li>
+                    <li>Schedule 1-on-1 performance review</li>
+                    <li>Adjust load: Reduce high-intensity volume by 10%</li>
+                {% elif driver.feature == 'visits_last_30_days' %}
+                    <li>Automated "Miss You" trigger</li>
+                    <li>Verify injury status via athlete app</li>
+                    <li>Check hydration & sleep logs for fatigue</li>
+                {% else %}
+                    <li>Standard membership check-in</li>
+                    <li>Review baseline metrics with athlete</li>
+                    <li>Monitor next 7-day engagement trend</li>
+                {% endif %}
             </ul>
         </div>
-
-        <div class="driver-card">
-            <h3 class="driver-title">🏃 Reduced High-Speed Meters</h3>
-            <ul class="suggestion-list">
-                <li>Check footwear/surface friction logs</li>
-                <li>Consult Sports Science: Plyometric prep</li>
-                <li>Verify hydration/glycogen window compliance</li>
-            </ul>
-        </div>
+        {% endfor %}
     </div>
 </div>
-
 
 
 
@@ -306,7 +316,7 @@ document.querySelectorAll(".clickable-row").forEach(row => {
 function toggleSidebar() {
     const sidebar = document.getElementById("driverSidebar");
     // Check if it's currently open
-    const isOpen = sidebar.style.width === "400px";
+    const isOpen = sidebar.style.width === "600px";
     
     if (isOpen) {
         closeSidebar();
@@ -316,7 +326,7 @@ function toggleSidebar() {
 }
 
 function openSidebar() {
-    document.getElementById("driverSidebar").style.width = "400px";
+    document.getElementById("driverSidebar").style.width = "600px";
 }
 
 function closeSidebar() {
