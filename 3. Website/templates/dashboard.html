@@ -165,6 +165,11 @@
     </div>
 
     <div class="sidebar">
+
+      <a class="recommendation-block" href="javascript:void(0)" onclick="toggleSidebar()">
+          <span class="action-label">View Action Plan</span>
+      </a>
+
       <div class="stat-block">
         <div class="stat-block-title">Risk Distribution</div>
         <div id="risk-breakdown">
@@ -195,7 +200,7 @@
       <!-- LTV block: new information, not a reformat of existing numbers -->
       <div class="ltv-block">
         <div class="stat-block-title">Member Lifetime Value (LTV)</div>
-        <div class=" kpi-value gold" > £{{ "{:,.2f}".format(data.member_ltv.avg_ltv) }}</div>
+        <div class="kpi-value gold" > £{{ "{:,.2f}".format(data.member_ltv.avg_ltv) }}</div>
         <div class="kpi-sub" id="save-rate-label">Average Total Value driven by each member</div>
 
       </div>
@@ -249,6 +254,38 @@
 
 </div>
 
+
+<div id="driverSidebar" class="driver-sidebar">
+    <div class="sidebar-header">
+        <h2>Action Plan</h2>
+        <button onclick="closeSidebar()" class="close-btn">&times;</button>
+    </div>
+    
+    <div class="sidebar-content">
+        
+        <div class="driver-card">
+            <h3 class="driver-title">📉 High Fatigue Index</h3>
+            <ul class="suggestion-list">
+                <li>Increase recovery block by 15%</li>
+                <li>Implement mandatory HRV monitoring</li>
+                <li>Adjust load for Group B athletes</li>
+            </ul>
+        </div>
+
+        <div class="driver-card">
+            <h3 class="driver-title">🏃 Reduced High-Speed Meters</h3>
+            <ul class="suggestion-list">
+                <li>Check footwear/surface friction logs</li>
+                <li>Consult Sports Science: Plyometric prep</li>
+                <li>Verify hydration/glycogen window compliance</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
 </body>
 </html>
 
@@ -264,4 +301,25 @@ document.querySelectorAll(".clickable-row").forEach(row => {
     detail.style.display = isOpen ? "none" : "table-row";
   });
 });
+
+
+function toggleSidebar() {
+    const sidebar = document.getElementById("driverSidebar");
+    // Check if it's currently open
+    const isOpen = sidebar.style.width === "400px";
+    
+    if (isOpen) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+
+function openSidebar() {
+    document.getElementById("driverSidebar").style.width = "400px";
+}
+
+function closeSidebar() {
+    document.getElementById("driverSidebar").style.width = "0";
+}
 </script>

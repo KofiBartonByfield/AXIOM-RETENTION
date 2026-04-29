@@ -2,7 +2,7 @@
 :root {
   --bg:        #080b10;
   --surface:   #0d1117;
-  --surface2:  #131920;
+  --surface2:  #131920b5;
   --border:    rgba(255,255,255,0.06);
   --border2:   rgba(255,255,255,0.12);
   --gold:      #c9a84c;
@@ -18,7 +18,9 @@
   --text:      #e8eaf0;
   --muted:     #5a6478;
   --muted2:    #8892a4;
-}
+  --ambient:   #607D8B;
+  
+  }
 
 /* ── Reset ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -491,7 +493,8 @@ select:focus, .file-input:focus {
 
 /* The Button */
 .btn-upload-gold {
-    background: linear-gradient(45deg, #d4af37, #f9e29c);
+    /* background: linear-gradient(45deg, #d4af37, #f9e29c); */
+    background: var(--gold);
     color: #000;
     border: none;
     padding: 14px;
@@ -508,7 +511,8 @@ select:focus, .file-input:focus {
 
 .btn-upload-gold:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    /* box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); */
+    background: var(--blue);
 }
 
 
@@ -657,4 +661,215 @@ select:focus, .file-input:focus {
     text-decoration: none;
     color: #fff;
     transition: background 0.2s;
+}
+
+
+.recommendation-block { 
+  
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 4px; 
+  padding: 18px; 
+  align-items: center;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.btn-primary {
+    /* Pinning to the right - adjusted for better vertical balance */
+    position: fixed;
+    right: 40px;
+    top: 40%;
+    z-index: 100;
+
+    /* Aesthetic Styling: The "Pro" look */
+    background: var(--surface);
+   /* Dark text on gold is much more readable/premium than white */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle "light-catch" edge */
+    
+    /* Typography: The Consultancy Feel */
+    padding: 10px 20px;
+    border-radius: 6px; /* Squaring it off slightly looks more "data-driven" than a pill */
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    
+    /* Depth and Polish */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2); /* Inner highlight */
+    
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Hover State: Reactive but subtle */
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Icon tweak to match the weight */
+.btn-primary i, .btn-primary span {
+    display: inline-block;
+    line-height: 1;
+}
+
+
+
+
+
+
+/* 1. The Main Sidebar Container */
+.driver-sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    
+    /* Using a solid hex matching your image */
+    background-color: #080a0c; 
+    
+    overflow-x: hidden;
+    transition: 0.4s;
+    padding-top: 20px; /* Reduced to make room for solid header */
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.7);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 2. The Solid, Centered Header */
+.sidebar-header {
+    background-color: #080a0c; /* Solid matching the image */
+    color: var(--gold);
+    padding: 20px 25px;
+    border-bottom: 1px solid #1a1a1a;
+    
+    /* Centering Logic */
+    display: flex;
+    justify-content: center; /* Centers the title */
+    align-items: center;
+    position: relative; /* Allows button to be absolute */
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    text-align: center;
+    width: 100%;
+}
+
+/* 3. The Absolute Close Button (Doesn't affect centering) */
+.close-btn {
+    position: absolute;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #666; /* Muted so it doesn't distract */
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: white;
+}
+
+/* 4. The Opaque Driver Cards */
+.driver-card {
+    /* Slightly lighter than the background so it stands out, but 100% solid */
+    background-color: #121417; 
+    margin: 20px 25px;
+    padding: 18px;
+    border-radius: 10px;
+    border-left: 4px solid var(--gold);
+    
+    /* Subtle shadow for a "lifted" look without transparency */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.driver-title {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold); /* Switched to gold for better contrast on rich black */
+}
+
+.suggestion-list {
+    margin: 0;
+    padding-left: 18px;
+    color: #E0E6ED; /* That "Arctic Ice" color for readability */
+    font-size: 0.9rem;
+    list-style-type: disc;
+}
+
+
+
+
+
+
+
+
+
+
+.recommendation-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0d0f11; /* Match your card backgrounds */
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    height: 100%; /* Ensures it fills the space in your grid */
+}
+
+.action-label {
+    color: var(--gold); /* Your specific gold hex */
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Hover effect for the whole block */
+.recommendation-block:hover {
+    background-color: #141619;
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
