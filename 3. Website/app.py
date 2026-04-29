@@ -7,6 +7,7 @@ Fully Cloud-Native Architecture:
 - Environment variables manage all AWS connections and secrets.
 """
 
+from dbm import sqlite3
 import os
 import json
 import boto3
@@ -22,6 +23,24 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 # ── Initialization & Config ───────────────────────────────────────────────────
+
+
+
+import os
+import sqlite3
+
+# This finds the directory where app.py lives (3.website)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# This points to the parent directory for the database
+# ".." means "go up one level"
+DB_PATH = os.path.join(BASE_DIR, "..", "axiom.db")
+
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
 
 load_dotenv() 
 
@@ -88,7 +107,7 @@ def index():
     #     return redirect(url_for("home"))
     return render_template("index.html")
 
-
+import sys
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -106,7 +125,9 @@ def login():
         if user and check_password_hash(user["password_hash"], password):
             session.clear()
             session["username"]   = username
-            # session["display_name"] = user.get("display_name")
+            session["role"] = user.get("role")
+            session["display_name"] = user.get("display_name")
+            print(f"✅ Login successful for {username} with role {session['role']}")
             session["client_ids"] = access_db.get(username, [])
             session.permanent     = False  
 
@@ -230,13 +251,12 @@ def upload_data():
             flash("Missing file or client selection.")
             return redirect(request.url)
 
-        # Security: Ensure the user is actually allowed to upload for this client
         if client_id not in session.get("client_ids", []):
             abort(403)
 
         try:
+            # 1. S3 Upload Logic
             s3 = boto3.client('s3')
-            # Define the 'raw' folder path
             file_key = f"{client_id}/raw/{file.filename}"
             
             s3.upload_fileobj(
@@ -245,14 +265,25 @@ def upload_data():
                 file_key
             )
             
-            flash(f"Successfully uploaded {file.filename} to {client_id}/raw/")
+            # 2. SQL Database Logic (The Admin Queue)
+            conn = sqlite3.connect(DB_PATH) # Using the path to parent dir
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO uploads (filename, client_name, status) VALUES (?, ?, ?)",
+                (file.filename, client_id, 'PENDING')
+            )
+            conn.commit()
+            conn.close()
 
-            # email notification to admin
+            flash(f"Successfully uploaded {file.filename}. Status set to PENDING.")
+
+            # 3. Email Notification
             msg = EmailMessage()
             msg.set_content(f"New file uploaded for {client_id}: {file.filename}")
             msg['Subject'] = f"📥 New Upload: {client_id}"
             msg['From'] = os.getenv("EMAIL_USER")
             msg['To'] = os.getenv("EMAIL_USER") 
+
             try:
                 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
                     smtp.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
@@ -260,16 +291,13 @@ def upload_data():
             except Exception as e:
                 print(f"Email failed: {e}")
 
-
             return redirect(url_for('home'))
             
         except Exception as e:
             print(f"❌ Upload failed: {e}")
             flash("Upload failed. Check server logs.")
     
-    # GET request: Show the upload form
     return render_template("upload.html", client_ids=session.get("client_ids", []))
-
 
 @app.context_processor
 def inject_user():
@@ -280,6 +308,43 @@ def inject_user():
     return dict(username=user_identity)
 
 
+@app.route("/admin")
+@login_required
+def admin_portal():
+    if session.get("role") != "admin":
+        abort(403)
+
+    conn = sqlite3.connect(DB_PATH) 
+    # This line is CRITICAL. Without it, you can't use upload['filename']
+    conn.row_factory = sqlite3.Row 
+    cursor = conn.cursor()
+    
+    try:
+        uploads = cursor.execute("SELECT * FROM uploads ORDER BY timestamp DESC").fetchall()
+    except sqlite3.OperationalError as e:
+        # This will tell you if the TABLE doesn't exist yet
+        return f"Database Error: {e}" 
+    finally:
+        conn.close()
+
+    return render_template("admin.html", uploads=uploads)
+
+
+
+
+@app.route("/admin/update/<int:file_id>/<new_status>")
+@login_required
+def change_status(file_id, new_status):
+    if session.get("role") != "admin":
+        abort(403)
+
+    conn = sqlite3.connect('axiom.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE uploads SET status = ? WHERE id = ?", (new_status.upper(), file_id))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('admin_portal'))
 # ── Run ───────────────────────────────────────────────────────────────────────
 
 # if __name__ == "__main__":
