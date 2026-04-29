@@ -316,7 +316,7 @@ document.querySelectorAll(".clickable-row").forEach(row => {
 function toggleSidebar() {
     const sidebar = document.getElementById("driverSidebar");
     // Check if it's currently open
-    const isOpen = sidebar.style.width === "600px";
+    const isOpen = sidebar.style.width === "30%";
     
     if (isOpen) {
         closeSidebar();
@@ -326,7 +326,7 @@ function toggleSidebar() {
 }
 
 function openSidebar() {
-    document.getElementById("driverSidebar").style.width = "600px";
+    document.getElementById("driverSidebar").style.width = "30%";
 }
 
 function closeSidebar() {
