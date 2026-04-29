@@ -91,6 +91,13 @@
                                Mark Live
                             </a>
                         {% endif %}
+
+                        <a href="{{ url_for('delete_upload', file_id=upload[0]) }}" 
+                            onclick="return confirm('Are you sure? This will delete the database record.')"
+                            style="color: #ff4444; margin-left: 15px; text-decoration: none; font-size: 1.1rem;" 
+                            title="Delete Record">
+                            🗑️
+                        </a>
                     </div>
                 </td>
             </tr>

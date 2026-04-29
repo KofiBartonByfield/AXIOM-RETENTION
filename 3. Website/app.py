@@ -356,6 +356,31 @@ def change_status(file_id, new_status):
         flash("Failed to update status.")
 
     return redirect(url_for('admin_portal'))
+
+
+@app.route("/admin/delete/<int:file_id>")
+@login_required
+def delete_upload(file_id):
+    if session.get("role") != "admin":
+        abort(403)
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+
+        # We ONLY delete the row from the SQL table. 
+        # The file stays safe in your S3 bucket.
+        cursor.execute("DELETE FROM uploads WHERE id = ?", (file_id,))
+        
+        conn.commit()
+        conn.close()
+        flash("Record removed from dashboard. (S3 file preserved)")
+        
+    except Exception as e:
+        print(f"Delete failed: {e}")
+        flash("Error removing record.")
+
+    return redirect(url_for('admin_portal'))
 # ── Run ───────────────────────────────────────────────────────────────────────
 
 # if __name__ == "__main__":
