@@ -183,6 +183,50 @@ def get_top_drivers(
 
     return pd.DataFrame(records)
 
+def get_macro_drivers(drivers_df: pd.DataFrame, top_n: int = 5) -> list[dict]:
+    """
+    Aggregate individual SHAP drivers across all watchlist members to produce
+    club-level churn narrative. Counts how often each feature appears as a
+    top driver, weighted by its average SHAP impact.
+    """
+    rows = []
+    for rank in [1, 2, 3]:
+        feature_col = f"driver_{rank}"
+        impact_col  = f"driver_{rank}_impact"
+        label_col   = f"driver_{rank}_label"
+
+        if feature_col not in drivers_df.columns:
+            continue
+
+        subset = drivers_df[[feature_col, impact_col, label_col]].copy()
+        subset.columns = ["feature", "impact", "label"]
+        rows.append(subset)
+
+    if not rows:
+        return []
+
+    all_drivers = pd.concat(rows, ignore_index=True)
+
+    # Only count drivers pushing toward churn (positive SHAP = increases risk)
+    churn_drivers = all_drivers[all_drivers["impact"] > 0]
+
+    summary = (
+        churn_drivers.groupby("feature")
+        .agg(
+            count=("feature", "size"),
+            avg_impact=("impact", "mean"),
+            # Take the most common label for that feature
+            label=("label", lambda x: x.mode()[0]),
+        )
+        .sort_values("count", ascending=False)
+        .head(top_n)
+        .reset_index()
+    )
+
+    summary["prevalence_pct"] = (summary["count"] / len(drivers_df) * 100).round(1)
+
+    return summary.to_dict(orient="records")
+
 
 # ── Risk classification 
 def classify_risk(prob: float) -> str:
@@ -224,7 +268,8 @@ def run_pipeline(
     -------
     dict — the full report payload (also written to output_path)
     """
-    df=get_data_from_s3(f"{client}/processed/{raw_file}")
+    df=get_data_from_s3(f"{client}/raw/{raw_file}")
+
 
     # ── Validation ────────────────────────────────────────────────────────────
     missing = set(REQUIRED_COLUMNS) - set(df.columns)
@@ -353,6 +398,8 @@ def run_pipeline(
         drivers_df, left_index=True, right_on="member_idx", how="left"
     ).drop(columns=["member_idx"])
 
+    macro_drivers = get_macro_drivers(drivers_df)
+
 
     watchlist_fees  = watchlist_df["membership_fee"]
     avg_fee         = float(df["membership_fee"].mean())
@@ -378,6 +425,7 @@ def run_pipeline(
             "description":            "This report identifies members at risk of churning and projects potential revenue recovery from targeted interventions.",
             "churn_rate":            round(churn_rate, 2),
             "total_monthly_revenue":   total_monthly_revenue,
+            "macro_drivers":           macro_drivers,
             "watchlist_count":         watchlist_count,
             "watchlist_threshold_pct": watchlist_threshold,
             "avg_risk_score":          round(avg_risk_score, 2),
