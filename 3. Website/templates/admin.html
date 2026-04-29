@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom | Admin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+</head>
+<body>
+<div class="ambient"></div>
+<div class="wrapper">
+
+       <header>
+    <div class="logo-group">
+      <div class="logo">
+        
+        <a href="{{ url_for('index') }}" class="logo-link">
+          <div class="logo"><span>Axiom</span> Retention <span>-</span> ADMIN</div>
+        </a>
+
+        <div class="logo-sub">Behavioural Intelligence Platform</div>
+      </div>
+    </div>
+
+
+<nav class="nav">
+    <div class="header-meta">Welcome back, {{ username }}!</div>
+    
+    <div class="nav-links-group">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('index') }}">The Science</a>
+        <a href="{{ url_for('logout') }}">Sign out</a>
+
+        {% if session.get('role') == 'admin' %}
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('admin_portal') }}" style="color: #FFB800; font-weight: bold;">
+                Admin Portal
+            </a>
+        {% endif %}
+        <a href="{{ url_for('upload_data') }}" class="btn-login">Upload Data</a>
+    </div>
+</nav>
+  </header>
+
+    <main class="admin-content">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client / File</th>
+                <th>Date Received</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for upload in uploads %}
+            <tr>
+                <td>{{ upload[0] }}</td>
+                <td>
+                    <div class="client-name">{{ upload[2] }}</div>
+                    <div class="file-details">s3://axiom/{{ upload[2] }}/raw/{{ upload[1] }}</div>
+                </td>
+                <td>{{ upload[4] }}</td>
+                <td>
+                    <span class="status-badge status-{{ upload[3]|lower }}">
+                        {{ upload[3] }}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-cell">
+                        {% if upload[3]|upper == 'LIVE' %}
+                            <a href="{{ url_for('change_status', file_id=upload[0], new_status='PENDING') }}" 
+                               class="btn-action status-undo" 
+                               style="border-color: #ff4444; color: #ff4444;"
+                               onclick="return confirm('Revert this dataset to Pending?')">
+                               Undo Live
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('change_status', file_id=upload[0], new_status='LIVE') }}" 
+                               class="btn-action status-trigger"
+                               onclick="return confirm('Confirm this data is ready for the client?')">
+                               Mark Live
+                            </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="empty-state">No uploads in the queue.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+</div>
+</body>
+</html>

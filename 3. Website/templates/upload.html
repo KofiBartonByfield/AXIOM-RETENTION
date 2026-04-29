@@ -70,10 +70,21 @@
                 <input type="file" name="file" id="file" accept=".csv" required class="file-input">
             </div>
 
-            <button type="submit" class="btn-upload-gold">
+            <div class="footer-links" >
+                <p>By uploading, you agree to our <a href="{{ url_for('static', filename='data_agreement.pdf') }}" target="_blank" >Data & Privacy Agreement</a></p>
+
+                <label >
+                    <input type="checkbox" id="consent" style="margin-top: 10px;margin-bottom: 20px;"> I confirm this data is anonymised and I have the right to share
+                </label>
+
+            </div>
+
+            <button id="upload-btn" disabled class="btn-upload-gold">Upload CSV</button>
+            <!-- <button type="submit" class="btn-upload-gold">
                 <span>Upload</span>
                 <i class="upload-icon">↑</i>
-            </button>
+            </button> -->
+
         </form>
     </div>
 </div>
@@ -105,3 +116,9 @@
 </div>
 </body>
 </html>
+
+<script>
+    document.getElementById('consent').onchange = function() {
+        document.getElementById('upload-btn').disabled = !this.checked;
+    };
+</script>

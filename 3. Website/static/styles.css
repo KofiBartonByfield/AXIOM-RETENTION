@@ -599,3 +599,62 @@ select:focus, .file-input:focus {
     letter-spacing: 0.5px;
 }
 
+
+
+.admin-content {
+    margin-top: 40px;
+    overflow-x: auto; /* Handles mobile viewing */
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Adds space between rows */
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #FFB800;
+    opacity: 0.8;
+}
+
+.admin-table td {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.admin-table tr td:first-child { border-radius: 8px 0 0 8px; }
+.admin-table tr td:last-child { border-radius: 0 8px 8px 0; }
+
+.client-name { font-weight: 600; color: #fff; }
+.file-details { font-size: 0.75rem; opacity: 0.5; font-family: 'DM Mono', monospace; }
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-live { background: #28a745; color: #fff; }
+.status-pending { background: #555; color: #fff; }
+
+.action-cell {
+    display: flex;
+    gap: 10px;
+}
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.2s;
+}

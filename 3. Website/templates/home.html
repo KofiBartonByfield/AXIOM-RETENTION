@@ -38,6 +38,13 @@
         <a href="{{ url_for('home') }}">Home</a>
         <a href="{{ url_for('index') }}">The Science</a>
         <a href="{{ url_for('logout') }}">Sign out</a>
+
+        {% if session.get('role') == 'admin' %}
+            <span class="nav-divider">|</span>
+            <a href="{{ url_for('admin_portal') }}" style="color: #FFB800; font-weight: bold;">
+                Admin Portal
+            </a>
+        {% endif %}
         <a href="{{ url_for('upload_data') }}" class="btn-login">Upload Data</a>
     </div>
 </nav>
