@@ -48,7 +48,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(32))
 
 # Global Configuration Variables - Edit these when your data updates
-TARGET_PAYLOAD_FILE = "results_2026_04_26.json"
+# TARGET_PAYLOAD_FILE = "results_2026_04_26.json"
 USERS_CONFIG_KEY = "config/users.json"
 
 print(f"DEBUG: Initializing app. Target bucket: {os.getenv('S3_BUCKET_NAME')}")
@@ -192,7 +192,7 @@ def home():
                 })
 
     # Sort reports by date (optional, but professional)
-    all_reports.sort(key=lambda x: x['snapshot_date'], reverse=True)
+    all_reports.sort(key=lambda x: x['snapshot_date'], reverse=False)
     
     return render_template("home.html", reports=all_reports)
 

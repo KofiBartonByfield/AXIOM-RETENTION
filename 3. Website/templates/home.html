@@ -53,85 +53,24 @@
 <div class="wrapper">
 
   <div class="section-label">Reports</div>
-<!-- 
-  {% if clients %}
-    <div class="client-grid">
-      {% for client in clients %}
-        <a class="client-card" href="{{ url_for('dashboard', client_id=client.id) }}">
-          <div class="client-card-header">
-            <div class="client-card-name">{{ client.name }}</div>
-            <div class="client-card-arrow">→</div>
-          </div>
-          <div class="client-card-meta">
-            <span class="client-meta-item">
-              <span class="client-meta-label">Snapshot</span>
-              <span class="client-meta-val">{{ client.snapshot_date }}</span>
-            </span>
-            <span class="client-meta-item">
-              <span class="client-meta-label">Members</span>
-              <span class="client-meta-val">{{ client.total_members }}</span>
-            </span>
-          </div>
-          <div class="client-card-cta">View Report</div>
-        </a>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="empty-state">
-      <div class="empty-state-icon">○</div>
-      <div class="empty-state-text">No reports available yet.</div>
-    </div>
-  {% endif %} -->
-
-
 
   <div class="client-grid">
     {% for report in reports %}
     <a class="client-card" href="{{ url_for('dashboard', client_id=report.client_id, filename=report.filename) }}" >
-        <h3 class="client-card-name">{{ report.report_name }}</h3>
-        <span class="client-meta-val"><strong>Date:</strong> {{ report.snapshot_date }}</span>
-        <span class="client-meta-val"><strong>Members:</strong> {{ report.total_members }}</span>
-        
-      
-        <div class="client-card-cta">View Report</div>
+      <h3 class="client-card-name">{{ report.report_name }}</h3>
+      <span class="client-meta-val"><strong>Date:</strong> {{ report.snapshot_date }}</span>
+      <span class="client-meta-val"><strong>Members:</strong> {{ report.total_members }}</span>
+      <div class="client-card-cta">View Report</div>
 
     </a>
     {% else %}
     <div class="empty-state-text">No reports available yet.</div>
-
     {% endfor %}
+
+  </div>
+
+
 </div>
-
-
-<!-- 
-<div class="client-grid">
-    {% for client in clients %}
-    <a class="client-card" href="{{ url_for('dashboard', client_id=client.client_id, filename=client.filename) }}">
-        <h3  class="client-card-name">{{ client.report_name }}</h3>
-          <div class="client-card-meta">
-            <span class="client-meta-item">
-              <span class="client-meta-label">Snapshot</span>
-              <span class="client-meta-val">{{ client.snapshot_date }}</span>
-            </span>
-            <span class="client-meta-item">
-              <span class="client-meta-label">Members</span>
-              <span class="client-meta-val">{{ client.total_members }}</span>
-            </span>
-          </div>
-
-          <div class="client-card-cta">View Report</div>
-
-        </a>
-    {% else %}
-    <div class="empty-state-text">No reports available yet.</div>
-
-    {% endfor %}
-</div>
- -->
-</div>
-
-
-
 
 
 <footer class="site-footer">
