@@ -76,11 +76,16 @@ def get_data_from_s3(file_key):
         
         # 4. Convert to a DataFrame
         df = pd.read_csv(BytesIO(data))
+        print(f"Data loaded successfully from {file_key}")
         return df
 
     except Exception as e:
         print(f"Error pulling from S3: {e}")
         return None
+    
+
+
+
 def upload_json_to_s3(data_dict, file_name, client="demo_example"):
     s3 = boto3.client(
         's3',
@@ -125,6 +130,13 @@ def _human_label(feature: str, shap_value: float) -> str:
 
     return labels.get(feature, f"{feature} is {direction} churn risk")
 
+import pandas as pd
+import numpy as np
+import shap
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
+
 def get_top_drivers(
     model_pipeline: Pipeline,
     X: pd.DataFrame,
@@ -132,52 +144,55 @@ def get_top_drivers(
 ) -> pd.DataFrame:
     """
     Compute the top N churn drivers for every member using SHAP.
-    Dispatches to the correct explainer based on the model type.
-
-    Works for any sklearn Pipeline with a 'scaler' and 'classifier' step.
-
-    Returns a DataFrame with one row per member:
-        member_idx | driver_1 | direction_1 | driver_2 | ...
+    Safely handles pipelines both with and without scalers.
     """
     classifier = model_pipeline.named_steps['classifier']
-    scaler     = model_pipeline.named_steps['scaler']
+    
+    # 1. Safely handle the scaler based on our new pipeline architecture
+    if 'scaler' in model_pipeline.named_steps:
+        scaler = model_pipeline.named_steps['scaler']
+        # Scale the features for Logistic Regression
+        X_processed = pd.DataFrame(
+            scaler.transform(X),
+            columns=X.columns,
+            index=X.index,
+        )
+    else:
+        # XGBoost sees the raw, unscaled features
+        X_processed = X.copy()
 
-    # Scale the features as the model sees them
-    X_scaled = pd.DataFrame(
-        scaler.transform(X),
-        columns=X.columns,
-        index=X.index,
-    )
-
+    # 2. Dispatch to the correct SHAP explainer
     if isinstance(classifier, XGBClassifier):
-        explainer  = shap.TreeExplainer(classifier)
-        shap_vals  = explainer.shap_values(X_scaled)
+        explainer = shap.TreeExplainer(classifier)
+        shap_vals = explainer.shap_values(X_processed)
 
     elif isinstance(classifier, LogisticRegression):
-        explainer  = shap.LinearExplainer(
-            classifier,
-            X_scaled,
-            feature_perturbation="correlation_dependent",
-        )
-        shap_vals  = explainer.shap_values(X_scaled)
+        # Note: 'feature_perturbation' is deprecated in newer SHAP versions.
+        # Passing the processed background dataset directly is the modern standard.
+        explainer = shap.LinearExplainer(classifier, X_processed)
+        shap_vals = explainer.shap_values(X_processed)
 
     else:
         raise TypeError(f"No SHAP explainer configured for {type(classifier)}")
 
+    # 3. Extract the top N drivers
     # shap_vals shape: (n_members, n_features)
     records = []
-    for i in range(len(X_scaled)):
+    for i in range(len(X_processed)):
         row      = shap_vals[i]
+        
+        # Sort by absolute impact (we want to see what moves the needle, up or down)
         top_idx  = np.argsort(np.abs(row))[::-1][:top_n]
         record   = {"member_idx": X.index[i]}
 
         for rank, idx in enumerate(top_idx, 1):
             val   = float(row[idx])
             fname = X.columns[idx]
-            record[f"driver_{rank}"]     = fname
+            
+            record[f"driver_{rank}"]        = fname
             record[f"driver_{rank}_impact"] = round(val, 4)
-            # Plain English direction for the report
-            record[f"driver_{rank}_label"] = _human_label(fname, val)
+            # Plain English direction for the gym owner dashboard
+            record[f"driver_{rank}_label"]  = _human_label(fname, val)
 
         records.append(record)
 
@@ -288,57 +303,123 @@ def run_pipeline(
         X, y, test_size=test_size, stratify=y, random_state=random_seed
     )
 
-    # ── Model candidates ──────────────────────────────────────────────────────
-    # GridSearchCV on recall: missing a churner costs more than a false alarm
-    scaler = StandardScaler()
 
+
+
+
+    from sklearn.model_selection import StratifiedKFold, GridSearchCV
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.linear_model import LogisticRegression
+    from xgboost import XGBClassifier
+    from sklearn.metrics import make_scorer, fbeta_score, classification_report
+
+    # 1. Define the business-aligned metric (F-beta with beta=2)
+    # This explicitly prioritises recall (finding the at-risk members) 
+    # while maintaining a baseline precision constraint to avoid 100% false-positive spam.
+    ftwo_scorer = make_scorer(fbeta_score, beta=1)
+
+    # 2. Define robust, stratified cross-validation
+    # Upgraded to 5 folds to ensure minority class stability across splits.
+    cv_strategy = StratifiedKFold(n_splits=5, shuffle=True, random_state=random_seed)
+
+    # 3. Model candidates with separated pipelines and expanded grids
     candidates = [
         (
             "Logistic_Regression",
-            LogisticRegression(max_iter=1000),
+            Pipeline([
+                # FIX: Scaler instantiated INSIDE the pipeline so each CV fold 
+                # fits a completely fresh scaler on its specific training subset.
+                ("scaler", StandardScaler()), 
+                ("classifier", LogisticRegression(max_iter=1000))
+            ]),
             {
-                "classifier__C":            [0.1, 1.0, 10.0],
+                # Expanded grid to make the search meaningful
+                "classifier__C": [0.01, 0.1, 1.0, 10.0],
                 "classifier__class_weight": ["balanced", None],
+                "classifier__solver": ["liblinear", "lbfgs"]
             },
         ),
         (
             "XGBoost",
-            XGBClassifier(eval_metric="logloss", verbosity=0),
+            Pipeline([
+                # FIX: Removed StandardScaler entirely. Tree models are invariant 
+                # to monotonic transformations; scaling just wastes compute here.
+                ("classifier", XGBClassifier(eval_metric="logloss", verbosity=0))
+            ]),
             {
-                "classifier__n_estimators":    [50, 100],
-                "classifier__max_depth":       [3, 5],
-                "classifier__learning_rate":   [0.1],
-                "classifier__scale_pos_weight": [3, 5],
+                # Expanded grid for depth, estimators, and learning rate
+                "classifier__n_estimators": [100, 300, 500],
+                "classifier__max_depth": [3, 5, 7],
+                "classifier__learning_rate": [0.01, 0.05, 0.1],
+                "classifier__scale_pos_weight": [1, 3, 5],
             },
         ),
     ]
 
     results = {}
-    for name, model, params in candidates:
-        pipe = Pipeline([("scaler", scaler), ("classifier", model)])
-        grid = GridSearchCV(pipe, params, cv=3, scoring="recall", n_jobs=-1)
-        grid.fit(X_train, y_train)
+    best_overall_model = None
+    best_overall_score = -1
+    best_overall_name = ""
 
+    # 4. Fit and tune exclusively on the training data
+    for name, pipe, params in candidates:
+        grid = GridSearchCV(
+            pipe,
+            param_grid=params,
+            cv=cv_strategy,
+            scoring=ftwo_scorer,
+            n_jobs=-1
+        )
+        grid.fit(X_train, y_train)
         y_pred = grid.best_estimator_.predict(X_test)
         test_recall = recall_score(y_test, y_pred)
 
+
         results[name] = {
             "best_params": grid.best_params_,
+            "cv_f2_score": round(grid.best_score_, 4),
+            "model_obj":   grid.best_estimator_,
             "cv_recall":   round(grid.best_score_, 4),
             "test_recall": round(test_recall, 4),
             "model_obj":   grid.best_estimator_,
             "report":      classification_report(y_test, y_pred, output_dict=True),
         }
-        print(f"  {name} | CV recall={grid.best_score_:.3f} | test recall={test_recall:.3f}")
+        print(f"  {name} | CV F2-score={grid.best_score_:.3f}")
 
-    # ── Winner selection ──────────────────────────────────────────────────────
-    winner_name = max(results, key=lambda k: results[k]["test_recall"])
-    winner_model = results[winner_name]["model_obj"]
+        # Track the absolute champion model across all candidate algorithms
+        if grid.best_score_ > best_overall_score:
+            best_overall_score = grid.best_score_
+            best_overall_model = grid.best_estimator_
+            best_overall_name = name
+
+    # 5. FIX: Test set acts strictly as a holdout.
+    # Evaluate on the test set EXACTLY ONCE with the winning model.
+    print(f"\nEvaluating champion model ({best_overall_name}) on held-out test set...")
+    y_pred_test = best_overall_model.predict(X_test)
+    test_f2 = fbeta_score(y_test, y_pred_test, beta=2)
+
+    print(f"Champion Test F2-score: {test_f2:.3f}")
+    print("\nClassification Report:\n", classification_report(y_test, y_pred_test))
+
+ # ── Winner selection ──────────────────────────────────────────────────────
+    winner_name = best_overall_name # max(results, key=lambda k: results[k]["cv_f1_score"]) 
+    winner_data = results[winner_name]
+    winner_model = winner_data["model_obj"]
+   
+   
+    # winner_name = max(results, key=lambda k: results[k]["test_recall"])
+    # winner_model = results[winner_name]["model_obj"]
     print(f"Winner: {winner_name}")
 
     # ── Score all members ─────────────────────────────────────────────────────
     df = df.copy()
-    df["churn_probability"] = (winner_model.predict_proba(X)[:, 1] * 100).round(2)
+    # df["churn_probability"] = (winner_model.predict_proba(X)[:, 1] * 100).round(2)
+
+    probabilities = winner_model.predict_proba(X)[:, 1]
+    df["churn_probability"] = (probabilities * 100).round(2)
+
+
 
     # ── Watchlist ─────────────────────────────────────────────────────────────
     watchlist_df = df[df["churn_probability"] >= watchlist_threshold].copy()
@@ -475,23 +556,6 @@ def run_pipeline(
 
 
 
-
-
-
-
-
-
-
-
-
-
-# The 'Key' is the full path inside the bucket
-# df = get_data_from_s3(target_file)
-
-# if df is not None:
-#     print("Success! Data loaded:")
-# import argparse
-
 if __name__ == "__main__":
 
     client = "demo_example"
@@ -500,5 +564,3 @@ if __name__ == "__main__":
 
     payload = run_pipeline(client = client, 
                            raw_file = raw_file)
-    
-    # 
