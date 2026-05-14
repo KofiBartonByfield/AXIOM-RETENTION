@@ -1,6 +1,8 @@
 # Ignore the 0. Client Data directory
 0. Admin/
 users.py
+*.json
+*.md
 
 # Ignore all .env files
 *.env
