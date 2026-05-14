@@ -500,14 +500,28 @@
 </wrapper>
 
 <!-- Footer -->
-<footer style="border-top:1px solid var(--border);padding:28px 0;margin-top:0;">
-  <div style="max-width:760px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-    <div class="footer-brand"><span>Axiom</span> Retention Group</div>
-    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">
-      <a href="/" style="color:var(--muted);text-decoration:none;margin-right:20px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">Home</a>
-      <a href="mailto:kofi@axiomretention.com" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">kofi@axiomretention.com</a>
+<footer class="site-footer">
+  <div class="footer-container">
+    
+    <div class="footer-brand">
+      <span>Axiom</span> Retention Group
+    </div>
+    
+    <p class="footer-tagline">Built for data driven gym operators.</p>
+    
+    <div class="footer-links">
+      Contact us at <a href="mailto:info@axiomretention.com">info@axiomretention.com</a>
+    </div>
+
+    <div class="footer-legal">
+      &copy; 2026 Axiom Retention. All rights reserved.
+    </div>
+
+    <div class="footer-links">
+      <a href="{{ url_for('privacy') }}" target="_blank">Privacy Policy</a>
     </div>
   </div>
+  
 </footer>
 
 </body>
