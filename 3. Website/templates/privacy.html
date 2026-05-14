@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Axiom Retention</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+  <style>
+    /* Page-specific styles not needed elsewhere */
+    .policy-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 56px 28px 100px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .policy-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 32px;
+      margin-bottom: 48px;
+    }
+
+    .policy-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .policy-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 40px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      -webkit-font-smoothing: antialiased;
+      margin-bottom: 12px;
+    }
+
+    .policy-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+
+    .policy-notice {
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 4px;
+      padding: 16px 20px;
+      margin-bottom: 48px;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted2);
+      line-height: 1.7;
+    }
+
+    .policy-notice strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .policy-section {
+      margin-bottom: 44px;
+    }
+
+    .policy-section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .policy-section h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      -webkit-font-smoothing: antialiased;
+      margin-bottom: 16px;
+    }
+
+    .policy-section p {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--muted2);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .policy-section p:last-child { margin-bottom: 0; }
+
+    .policy-list {
+      list-style: none;
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .policy-list li {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--muted2);
+      line-height: 1.7;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .policy-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .policy-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 300;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: rgba(18,24,38,0.6);
+      white-space: nowrap;
+    }
+
+    .policy-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 300;
+      color: var(--muted2);
+      line-height: 1.6;
+      vertical-align: top;
+      min-width: 0;
+    }
+
+    .policy-table tr:last-child td { border-bottom: none; }
+
+    .policy-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .policy-tag.yes   { color: var(--green); background: var(--green-dim); border-color: rgba(62,207,142,0.25); }
+    .policy-tag.no    { color: var(--red);   background: var(--red-dim);   border-color: rgba(224,82,82,0.25); }
+    .policy-tag.maybe { color: var(--amber); background: var(--amber-dim); border-color: rgba(212,160,23,0.25); }
+
+    .policy-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 44px 0;
+    }
+
+    .policy-contact {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px 28px;
+    }
+
+    .policy-contact-name {
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .policy-contact-role {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted2);
+      margin-bottom: 14px;
+    }
+
+    .policy-contact-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .policy-contact-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 56px;
+      flex-shrink: 0;
+    }
+
+    .policy-contact-val {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted2);
+    }
+
+    .policy-contact-val a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .policy-contact-val a:hover { text-decoration: underline; }
+
+    .policy-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 40px;
+      transition: color 0.15s;
+    }
+
+    .policy-back:hover { color: var(--gold); }
+    .policy-back::before { content: '←'; font-size: 12px; }
+
+    @media (max-width: 600px) {
+      .policy-wrap { padding: 36px 18px 80px; }
+      .policy-title { font-size: 30px; }
+      .policy-table { font-size: 12px; }
+      .policy-table th, .policy-table td { padding: 9px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<!-- Top nav matching main site -->
+<nav class="topbar" style="border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;z-index:100;background:rgba(7,10,15,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
+  <div style="max-width:1160px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;">
+    <a class="logo" href="/" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--text);-webkit-font-smoothing:antialiased;">
+      <span style="color:var(--gold)">Axiom</span> Retention
+    </a>
+    <a href="/" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">← Back to site</a>
+  </div>
+</nav>
+
+<div class="policy-wrap">
+
+  <div class="policy-header">
+    <div class="policy-eyebrow">Legal</div>
+    <h1 class="policy-title">Data Privacy Policy</h1>
+    <div class="policy-meta">Axiom Retention Group · Last updated: 14 May 2026 · Version 1.0</div>
+  </div>
+
+  <div class="policy-notice">
+    <strong>Summary for clients:</strong> We work exclusively with anonymised member IDs. We do not collect names, emails, payment details, or any other personally identifiable information. Your members' data never leaves a secure, encrypted environment and is deleted within 30 days of report delivery unless a formal service agreement is in place.
+  </div>
+
+  <!-- 1. Who we are -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 01</div>
+    <h2>Who We Are</h2>
+    <p>Axiom Retention Group ("Axiom", "we", "us", "our") provides data analytics and churn prediction services for fitness businesses in the United Kingdom. Our registered business contact is listed in Section 9 of this policy.</p>
+    <p>Under UK GDPR and the Data Protection Act 2018, Axiom Retention Group acts as a <strong style="color:var(--text);font-weight:500;">Data Processor</strong> when handling client-supplied member data. The fitness business engaging our services is the <strong style="color:var(--text);font-weight:500;">Data Controller</strong> and retains responsibility for its members' personal data. This distinction matters: your obligations to your members under UK GDPR are not transferred to us by virtue of this engagement.</p>
+  </div>
+
+  <!-- 2. Data we collect -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 02</div>
+    <h2>Data We Process</h2>
+    <p>To perform a churn analysis, we request the minimum dataset necessary. We specifically instruct clients to export anonymised records only. The table below describes what we process and our lawful basis for doing so.</p>
+
+    <table class="policy-table">
+      <thead>
+        <tr>
+          <th>Data type</th>
+          <th>Example</th>
+          <th>Required</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Anonymised member ID</td>
+          <td>Member_12345</td>
+          <td><span class="policy-tag yes">Yes</span></td>
+          <td>Links attendance records without identifying individuals</td>
+        </tr>
+        <tr>
+          <td>Check-in timestamps</td>
+          <td>2025-03-14 09:22</td>
+          <td><span class="policy-tag yes">Yes</span></td>
+          <td>Calculates visit frequency and attendance velocity</td>
+        </tr>
+        <tr>
+          <td>Membership type &amp; dates</td>
+          <td>Monthly, joined Jan 2024</td>
+          <td><span class="policy-tag yes">Yes</span></td>
+          <td>Tenure calculation and contract-type risk weighting</td>
+        </tr>
+        <tr>
+          <td>Monthly fee</td>
+          <td>£45.00</td>
+          <td><span class="policy-tag yes">Yes</span></td>
+          <td>Revenue-at-risk and LTV projections</td>
+        </tr>
+        <tr>
+          <td>Age range or postcode district</td>
+          <td>30–40, SW1</td>
+          <td><span class="policy-tag maybe">Optional</span></td>
+          <td>Demographic segmentation if provided; not required for core model</td>
+        </tr>
+        <tr>
+          <td>Full name, email, phone</td>
+          <td>—</td>
+          <td><span class="policy-tag no">Never</span></td>
+          <td>Not requested, not processed, not stored</td>
+        </tr>
+        <tr>
+          <td>Payment card or bank details</td>
+          <td>—</td>
+          <td><span class="policy-tag no">Never</span></td>
+          <td>Not requested, not processed, not stored</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>If you send us a file containing personally identifiable information in error, we will notify you promptly, delete the data without processing it, and request a corrected export.</p>
+  </div>
+
+  <!-- 3. How we use data -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 03</div>
+    <h2>How We Use the Data</h2>
+    <p>Data provided to Axiom is used solely for the agreed analytical purpose. Specifically:</p>
+    <ul class="policy-list">
+      <li>Modelling attendance patterns and visit frequency decay to identify behavioural churn signals.</li>
+      <li>Generating per-member churn probability scores and risk-tier classifications (CRITICAL, HIGH, ELEVATED, MONITOR).</li>
+      <li>Identifying the primary behavioural drivers of churn risk for reporting purposes.</li>
+      <li>Producing revenue-at-risk projections and recovery estimates for executive reporting.</li>
+    </ul>
+    <p>We do not use your data for any other commercial purpose, do not sell or share it with third parties, and do not use it to train generalised models that are deployed outside your engagement.</p>
+  </div>
+
+  <!-- 4. Legal basis -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 04</div>
+    <h2>Lawful Basis for Processing</h2>
+    <p>As a Data Processor acting under instruction from a Data Controller, Axiom processes data on the basis of a contractual service agreement. The Data Controller (you, the client) is responsible for ensuring your own lawful basis for sharing member data with a third-party analytics provider — typically <strong style="color:var(--text);font-weight:500;">legitimate interests</strong> under UK GDPR Article 6(1)(f), given that churn analysis is a core operational activity directly in members' interests (retaining a service they value).</p>
+    <p>We recommend consulting your own legal counsel if you are uncertain of your lawful basis. We are happy to assist with the legitimate interests assessment (LIA) documentation on request.</p>
+  </div>
+
+  <!-- 5. Security -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 05</div>
+    <h2>Security &amp; Storage</h2>
+    <ul class="policy-list">
+      <li><strong style="color:var(--text);font-weight:500;">Encryption in transit:</strong> All data transfers use TLS 1.2 or higher. We do not accept data via unencrypted channels (plain email attachments are discouraged; secure transfer links are provided on request).</li>
+      <li><strong style="color:var(--text);font-weight:500;">Encryption at rest:</strong> Data stored on cloud infrastructure (AWS S3) is encrypted using AES-256 server-side encryption.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Access control:</strong> Access to raw datasets is restricted to the Lead Data Scientist conducting the audit. No sub-processors or third-party tools have access to identifiable member records.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Infrastructure:</strong> Our platform runs on AWS infrastructure located in the <strong style="color:var(--text);font-weight:500;">EU-West (London)</strong> region. Data does not leave the UK or EEA.</li>
+      <li><strong style="color:var(--text);font-weight:500;">No third-party sharing:</strong> We do not pass client data to advertising platforms, analytics trackers, or any other commercial third party.</li>
+    </ul>
+  </div>
+
+  <!-- 6. Retention -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 06</div>
+    <h2>Data Retention &amp; Deletion</h2>
+    <p>Our retention schedule is as follows:</p>
+    <ul class="policy-list">
+      <li><strong style="color:var(--text);font-weight:500;">One-off Leakage Audit:</strong> Raw input data is deleted within <strong style="color:var(--text);font-weight:500;">30 days</strong> of report delivery. Aggregated, non-identifiable outputs (model performance statistics, anonymised summary metrics) may be retained for internal benchmarking.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Ongoing service agreement:</strong> Data is retained for the duration of the active service agreement and deleted within 30 days of agreement termination, unless a longer retention period is agreed in writing.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Right to erasure:</strong> You may request deletion of your data at any time by contacting us. We will confirm deletion within 5 business days.</li>
+    </ul>
+  </div>
+
+  <!-- 7. Your rights -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 07</div>
+    <h2>Your Rights Under UK GDPR</h2>
+    <p>As the Data Controller, you have the following rights in respect of data held by Axiom on your behalf. You may also need to facilitate these rights for your own members under your separate controller obligations.</p>
+    <ul class="policy-list">
+      <li><strong style="color:var(--text);font-weight:500;">Right of access:</strong> You may request a summary of what data we hold relating to your engagement at any time.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Right to rectification:</strong> If data was supplied in error, we will correct or replace it on request.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Right to erasure:</strong> You may request deletion of all data associated with your engagement at any time.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Right to restrict processing:</strong> You may ask us to pause processing while a query is resolved.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Right to data portability:</strong> We will provide your input data and any derived outputs in a machine-readable format (CSV or JSON) on request.</li>
+      <li><strong style="color:var(--text);font-weight:500;">Right to object:</strong> You may object to any specific processing activity. We will cease that activity unless we have compelling legitimate grounds to continue.</li>
+    </ul>
+    <p>To exercise any of these rights, contact us using the details in Section 9. We will respond within <strong style="color:var(--text);font-weight:500;">30 days</strong> in line with UK GDPR requirements.</p>
+  </div>
+
+  <!-- 8. DPA -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 08</div>
+    <h2>Data Processing Agreement</h2>
+    <p>Axiom Retention Group is willing to enter into a formal Data Processing Agreement (DPA) with any client prior to data transfer. A DPA is a contractual document that formally records the roles, obligations, and safeguards of each party under UK GDPR Article 28.</p>
+    <p>If your organisation requires a signed DPA before sharing attendance data — whether for your own compliance purposes or at the request of your members — please contact us before beginning an engagement. We will provide a standard DPA template within 2 business days.</p>
+    <p>Clients operating under an existing DPA with Axiom should refer to that document in the event of any conflict with the terms stated here; the DPA takes precedence.</p>
+  </div>
+
+  <!-- 9. Breach -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 09</div>
+    <h2>Data Breach Procedure</h2>
+    <p>In the unlikely event of a data breach affecting client data held by Axiom, we will:</p>
+    <ul class="policy-list">
+      <li>Notify you as the Data Controller <strong style="color:var(--text);font-weight:500;">within 72 hours</strong> of becoming aware of the incident, in line with UK GDPR Article 33.</li>
+      <li>Provide a written incident report describing the nature of the breach, the data affected, likely consequences, and remedial measures taken.</li>
+      <li>Cooperate fully with any investigation by the Information Commissioner's Office (ICO) if required.</li>
+    </ul>
+    <p>As Data Controller, you are responsible for assessing whether the breach requires notification to the ICO or to affected individuals. We will provide all information necessary to support that assessment.</p>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <!-- 10. Contact -->
+  <div class="policy-section">
+    <div class="policy-section-num">Section 10</div>
+    <h2>Contact &amp; Complaints</h2>
+    <p>For any questions about this policy, to request a DPA, or to exercise your data rights, please contact the data lead directly:</p>
+
+    <div class="policy-contact">
+      <div class="policy-contact-name">Kofi Barton-Byfield</div>
+      <div class="policy-contact-role">Founder &amp; Lead Data Scientist, Axiom Retention Group</div>
+      <div class="policy-contact-row">
+        <span class="policy-contact-label">Email</span>
+        <span class="policy-contact-val"><a href="mailto:kofi@axiomretention.com">kofi@axiomretention.com</a></span>
+      </div>
+      <div class="policy-contact-row">
+        <span class="policy-contact-label">Subject</span>
+        <span class="policy-contact-val">Data Privacy Enquiry — Axiom Retention</span>
+      </div>
+    </div>
+
+    <p style="margin-top:20px;">If you are not satisfied with our response, you have the right to lodge a complaint with the UK supervisory authority:</p>
+    <div class="policy-contact" style="margin-top:12px;">
+      <div class="policy-contact-name">Information Commissioner's Office (ICO)</div>
+      <div class="policy-contact-row">
+        <span class="policy-contact-label">Website</span>
+        <span class="policy-contact-val"><a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a></span>
+      </div>
+      <div class="policy-contact-row">
+        <span class="policy-contact-label">Helpline</span>
+        <span class="policy-contact-val">0303 123 1113</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="policy-divider"></div>
+
+  <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;line-height:1.8;">
+    This policy is reviewed annually and updated when our practices change. The version date at the top of this page reflects the most recent revision. Continued use of our services after a policy update constitutes acceptance of the revised terms.
+  </p>
+
+</div>
+
+<!-- Footer -->
+<footer style="border-top:1px solid var(--border);padding:28px 0;margin-top:0;">
+  <div style="max-width:760px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <div class="footer-brand"><span>Axiom</span> Retention Group</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">
+      <a href="/" style="color:var(--muted);text-decoration:none;margin-right:20px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">Home</a>
+      <a href="mailto:kofi@axiomretention.com" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">kofi@axiomretention.com</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
