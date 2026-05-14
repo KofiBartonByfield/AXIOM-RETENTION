@@ -107,6 +107,11 @@ def index():
     #     return redirect(url_for("home"))
     return render_template("index.html")
 
+@app.route("/privacy")
+@login_required
+def privacy():
+    return render_template("privacy.html")
+
 import sys
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -388,4 +393,4 @@ def delete_upload(file_id):
 
 if __name__ == "__main__":
     # host="0.0.0.0" tells Flask to listen on all public IPs
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=5000)

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy — Axiom Retention</title>
+  <title>Axiom Retention | Privacy Policy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -265,16 +265,25 @@
 </head>
 <body>
 <div class="ambient"></div>
+<div class="wrapper">
+
 
 <!-- Top nav matching main site -->
-<nav class="topbar" style="border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;z-index:100;background:rgba(7,10,15,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
-  <div style="max-width:1160px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;">
-    <a class="logo" href="/" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--text);-webkit-font-smoothing:antialiased;">
-      <span style="color:var(--gold)">Axiom</span> Retention
-    </a>
-    <a href="/" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">← Back to site</a>
-  </div>
-</nav>
+  <header>
+    <div class="logo-group">
+      <div class="logo">
+        
+        <a href="{{ url_for('index') }}" class="logo-link">
+          <div class="logo"><span>Axiom</span> Retention</div>
+        </a>
+
+        <div class="logo-sub">Behavioural Intelligence Platform</div>
+      </div>
+    </div>
+    <nav class="nav">
+        <a href="{{ url_for('home') }}" class="nav-links-group logo-sub"  onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">← Back to site</a>
+    </nav>
+  </header>
 
 <div class="policy-wrap">
 
@@ -487,6 +496,8 @@
   </p>
 
 </div>
+</div>
+</wrapper>
 
 <!-- Footer -->
 <footer style="border-top:1px solid var(--border);padding:28px 0;margin-top:0;">

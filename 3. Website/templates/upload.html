@@ -31,16 +31,16 @@
     </div>
 
 
-<nav class="nav">
-    <div class="header-meta">Welcome back, {{ username }}!</div>
-    
-    <div class="nav-links-group">
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('index') }}">The Science</a>
-        <a href="{{ url_for('logout') }}">Sign out</a>
-        <a href="{{ url_for('upload_data') }}" class="btn-login">Upload Data</a>
-    </div>
-</nav>
+    <nav class="nav">
+        <div class="header-meta">Welcome back, {{ username }}!</div>
+        
+        <div class="nav-links-group">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('index') }}">The Science</a>
+            <a href="{{ url_for('logout') }}">Sign out</a>
+            <a href="{{ url_for('upload_data') }}" class="btn-login">Upload Data</a>
+        </div>
+    </nav>
   </header>
 
  
@@ -71,7 +71,7 @@
             </div>
 
             <div class="footer-links" >
-                <p>By uploading, you agree to our <a href="{{ url_for('static', filename='data_agreement.pdf') }}" target="_blank" >Data & Privacy Agreement</a></p>
+                <p>By uploading, you agree to our <a href="{{ url_for('privacy') }}" target="_blank" >Data & Privacy Agreement</a></p>
 
                 <label >
                     <input type="checkbox" id="consent" style="margin-top: 10px;margin-bottom: 20px;"> I confirm this data is anonymised and I have the right to share
@@ -106,9 +106,12 @@
     </div>
 
     <div class="footer-legal">
-      &copy; 2026 Axiom Retention. All rights reserved.
+      &copy; 2026 Axiom Retention. All rights reserved.   <a href="{{ url_for('privacy') }}" target="_blank">Privacy Policy</a>
     </div>
 
+    <!-- <div class="footer-links">
+      <a href="{{ url_for('privacy') }}" target="_blank">Privacy Policy</a>
+    </div> -->
   </div>
   
 </footer>
