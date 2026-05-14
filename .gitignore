@@ -1,10 +1,10 @@
 # Ignore the 0. Client Data directory
-0. Admin/
 users.py
 *.json
 *.md
 *.csv
-
+!README.md
+!aws_instructions.md
 # Ignore all .env files
 *.env
 .env
