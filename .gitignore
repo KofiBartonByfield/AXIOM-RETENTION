@@ -3,6 +3,7 @@
 users.py
 *.json
 *.md
+*.csv
 
 # Ignore all .env files
 *.env
