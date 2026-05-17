@@ -934,3 +934,138 @@ select:focus, .file-input:focus {
 .sidebar-content::-webkit-scrollbar {
     display: none;
 }
+
+
+/* ── Responsive Architecture ── */
+
+@media (max-width: 900px) {
+  .wrapper { padding: 24px 20px 60px; }
+  
+  /* Force header items to stack and align strictly to the left */
+  header { 
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start !important; /* Forces left alignment */
+    text-align: left !important;
+    margin-bottom: 32px; 
+    padding-bottom: 20px; 
+    gap: 15px; 
+    width: 100%;
+  }
+  
+  /* Align title text and subtitles to the left */
+  .header-meta { 
+    text-align: left !important; 
+    align-items: flex-start !important; 
+    width: 100%;
+  }
+  
+  /* Align navigation link containers to the left */
+  .nav { 
+    align-items: flex-start !important; 
+    width: 100%; 
+  }
+  
+  .nav-links-group {
+    justify-content: flex-start !important; /* Prevents center/right drifting */
+    width: 100%;
+    gap: 15px;
+  }
+  
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 28px; }
+  .kpi-value { font-size: 24px; }
+  
+  .main-grid { grid-template-columns: 1fr; }
+  .sidebar { order: 2; } 
+  .panel { order: 1; }
+  .client-grid { grid-template-columns: repeat(2, 1fr); }
+  .section-label-annotation { display: none; }
+  .overview-container { flex-direction: column; }
+}
+
+@media (max-width: 768px) {
+  .driver-sidebar[style*="width: 30%"] {
+      width: 100% !important;
+      border-left: none;
+  }
+
+  /* Ensure deep mobile targets continue to stay pinned to the left */
+  header { 
+    align-items: flex-start !important; 
+    text-align: center !important; 
+  }
+  .header-meta { 
+    align-items: flex-start !important; 
+  }
+  .nav { 
+    align-items: flex-start !important; 
+  }
+  .nav-links-group { 
+    flex-wrap: wrap; 
+    justify-content: flex-start !important; 
+    gap: 15px; 
+  }
+
+  tbody tr td {
+      padding: 16px 12px; 
+  }
+}
+
+@media (max-width: 768px) {
+  /* 1. Fix the Action Plan Drawer for Mobile */
+  /* This overrides the inline JS style of 30% to make it full screen */
+  .driver-sidebar[style*="width: 30%"] {
+      width: 100% !important;
+      border-left: none;
+  }
+
+  /* 2. Fix the Navigation Collisions */
+  header { align-items: center; text-align: center; }
+  .header-meta { align-items: center; margin-bottom: 12px; }
+  .nav { align-items: center; width: 100%; }
+  .nav-links-group { 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      gap: 15px; 
+  }
+
+  /* 3. Increase Touch Targets for Fat Fingers */
+  tbody tr td {
+      padding: 16px 12px; /* Taller rows for easier tapping */
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper { padding: 18px 14px 48px; }
+
+  /* 4. Stack KPIs to prevent text breaking on small screens */
+  .kpi-grid { grid-template-columns: 1fr; gap: 10px; }
+  .kpi-card { padding: 16px 14px; }
+  .kpi-value { font-size: 26px; }
+  .kpi-label { font-size: 10px; letter-spacing: 0.15em; }
+
+  .logo { font-size: 24px; }
+  .panel-title { font-size: 13px; margin-bottom: 8px; }
+  
+  /* Stack the table header so the member count doesn't overflow */
+  .panel-header { 
+      flex-direction: column; 
+      align-items: flex-start; 
+      gap: 8px;
+  }
+
+  /* 5. Visual cue that the table scrolls horizontally */
+  .panel {
+      box-shadow: inset -15px 0 15px -15px rgba(0,0,0,0.6);
+  }
+
+  .client-grid { grid-template-columns: 1fr; }
+  .hide-sm { display: none; }
+  
+  .btn-primary {
+      top: auto;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 24px;
+  }
+}
